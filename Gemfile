@@ -1,3 +1,7 @@
+# syntax:
+# bundle install --binstubs
+# bundle pack
+
 source 'http://rubygems.org'
 
 gem 'rails', '3.0.7'
@@ -7,6 +11,7 @@ gem 'rails', '3.0.7'
 
 gem 'sqlite3'
 gem 'slim'
+gem 'haml2slim'
 
 group :test, :development do
   gem "rspec-rails", "~> 2.4"
