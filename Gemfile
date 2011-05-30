@@ -8,6 +8,12 @@ gem 'rails', '3.0.7'
 gem 'sqlite3'
 gem 'slim'
 
+group :test, :development do
+  gem "rspec-rails", "~> 2.4"
+  gem 'webrat'
+end
+
+
 # Use unicorn as the web server
 # gem 'unicorn'
 
