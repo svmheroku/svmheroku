@@ -1,4 +1,6 @@
 Svm::Application.routes.draw do
+  get "r10/index"
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
