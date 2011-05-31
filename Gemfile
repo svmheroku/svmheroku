@@ -16,6 +16,7 @@ gem 'haml2slim'
 group :test, :development do
   gem "rspec-rails", "~> 2.4"
   gem 'webrat'
+  gem 'ruby-debug19', :require => 'ruby-debug'
 end
 
 

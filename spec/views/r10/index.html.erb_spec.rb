@@ -1,5 +1,7 @@
 require 'spec_helper'
 
 describe "r10/index.html.erb" do
-  pending "add some examples to (or delete) #{__FILE__}"
+  @rspns = get "/r10/index"
+  # @ndoc = Nokogiri::HTML(@rspns.body)
+  @rspns.body.should contain "svm"
 end
