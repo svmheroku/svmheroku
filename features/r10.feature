@@ -5,3 +5,5 @@ Feature: See r10 index action
     Given good_luck
     When I go to r10_index
     Then I should see "index"
+    And I should see "layouts/application.html.slim" in a comment
+

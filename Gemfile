@@ -5,6 +5,7 @@ source 'http://rubygems.org'
 
 gem 'rails', '3.0.7'
 gem 'rake'
+gem 'slim'
 
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators
@@ -16,4 +17,6 @@ group :development, :test do
   gem 'sqlite3-ruby', :require => 'sqlite3'
   gem 'ruby-debug19', :require => 'ruby-debug'
   gem 'webrat'
+  gem 'haml2slim'
+  gem 'launchy'
 end
