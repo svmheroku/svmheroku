@@ -4,4 +4,4 @@
 # If you change this key, all old signed cookies will become invalid!
 # Make sure the secret is at least 30 characters and all random,
 # no regular words or you'll be exposed to dictionary attacks.
-Svm::Application.config.secret_token = '88ac95b32608c06b91fbe063909434944cefa076dfd23b26c1c149c4e307bc12427864a85dc70b66d18811ce864655d7aff48be9a643f8b0f24615c3f2dd1cef'
+Svm::Application.config.secret_token = 'f3fc16c0dd1600942b38c3d7ea1fdd3c06b4015dd582b0b05cf164cb67fad2c0af05fb10e138216dd56ada74a65bbd9151b403a8db7363cc8af308b81c250e4c'
