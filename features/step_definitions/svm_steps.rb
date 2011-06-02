@@ -21,3 +21,14 @@ Then /^smtp$/ do
   assert true
 end
 
+
+When /^I visit "([^"]*)"$/ do |path|
+  visit path
+end
+
+Then /^I_should_see_lhs_links$/ do
+  ndoc = Nokogiri::HTML page.html
+  my_links = ndoc.css("a")
+  ml_html_a = my_links.map{|ml|ml.inner_html}
+  ml_html_a.sort.should == ["About", "Blog", "Books", "Contact", "Facebook Page", "Forum", "Glossary", "Leadership Team", "Predictions", "Site Map", "Terms of Service", "Twitter Feed", "svm.heroku.com"]
+end
