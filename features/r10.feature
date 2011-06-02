@@ -4,8 +4,8 @@ Feature: See r10 index action
   Scenario: Follow r10 index
     Given good_luck
     When I go to r10_index
+    And smtp
     Then I should see "index"
     And I should see "layouts/application.html.slim" in a comment
     And I should see "layouts/_lhs_links.html.slim" in a comment
-    And smtp
-
+    And I should see "views/r10/index.html.slim" in a comment

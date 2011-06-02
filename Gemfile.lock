@@ -158,6 +158,7 @@ PLATFORMS
 DEPENDENCIES
   cucumber-rails
   database_cleaner
+  haml
   haml2slim
   launchy
   rails (= 3.0.7)
