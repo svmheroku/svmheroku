@@ -4,6 +4,7 @@ html
     title http://svm.heroku.com
     meta(http-equiv="content-type" content="text/html; charset=UTF-8")
   body
+    /! layouts/application.html.slim
     table
       tr
         td
@@ -11,8 +12,6 @@ html
             a(href="/")svm.heroku.com
       tr
         td(valign="top")
-          /layouts/lhs_links
-          /!
-            layouts/application.html.slim
+          = render :partial => "layouts/lhs_links"
         td
           =yield
