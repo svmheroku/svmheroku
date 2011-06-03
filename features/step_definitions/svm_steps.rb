@@ -49,3 +49,9 @@ Then /^the_response_header_should_show_page_is_cached$/ do
     assert false,"Cache-Control in response_headers is not public."
   end
 end
+
+Then /^I_should_see_favicon$/ do
+debugger
+  get "/r10/index"
+  get "/favicon.ico"
+end

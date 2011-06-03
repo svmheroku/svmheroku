@@ -27,7 +27,6 @@ Feature: See r10 index action
     Given good_luck
     When I visit "/r10/site_map"
     Then I should see "Site Map"
-    And smtp
     And the_response_header_should_show_page_is_cached
 
 
