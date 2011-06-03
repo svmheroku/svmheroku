@@ -1,5 +1,7 @@
 Svm::Application.routes.draw do
 
+  get "predictions/index"
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

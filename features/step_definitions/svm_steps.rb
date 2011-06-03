@@ -32,3 +32,20 @@ Then /^I_should_see_lhs_links$/ do
   ml_html_a = my_links.map{|ml|ml.inner_html}
   ml_html_a.sort.should == ["About", "Blog", "Books", "Contact", "Facebook Page", "Forum", "Glossary", "Leadership Team", "Predictions", "Site Map", "Terms of Service", "Twitter Feed", "svm.heroku.com"]
 end
+
+Then /^I_should_see_url "([^"]*)"$/ do |uurl|
+  # uurl is what I should see in the url bar.
+  # I found current_path via debugger, then self.methods
+  # uurl.should == page.current_path
+  # Also I found it in the page object:
+  uurl.should == page.current_path
+end
+
+Then /^the_response_header_should_show_page_is_cached$/ do
+  # web developer shows this at the bottom of the information-tab-result.
+  if page.response_headers["Cache-Control"] =~ /public/
+    assert true
+  else
+    assert false,"Cache-Control in response_headers is not public."
+  end
+end
