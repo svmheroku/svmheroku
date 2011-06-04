@@ -14,7 +14,6 @@ Feature: See r10 index action
     When I visit "/"
     Then I should see "About"
     And I should see "layouts/application.html.slim" in a comment
-    And I should see "layouts/_lhs_links.html.slim" in a comment
     And I should see "views/r10/index.html.slim" in a comment
 
   Scenario: Add Rails-partial named lhs links
