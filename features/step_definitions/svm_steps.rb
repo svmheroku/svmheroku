@@ -51,7 +51,8 @@ Then /^the_response_header_should_show_page_is_cached$/ do
 end
 
 Then /^I_should_see_favicon$/ do
-debugger
-  get "/r10/index"
-  get "/favicon.ico"
+  rspns = get "/favicon.ico"
+  rspns.content_length.should == 198
+  rspns.content_type.should == "image/vnd.microsoft.icon"
+  rspns.status.should == 200
 end
