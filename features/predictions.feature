@@ -20,7 +20,6 @@ Feature: See predictions
     And I_should_see_url "/predictions/fx"
     And the_response_header_should_show_page_is_cached
 
-  @wip
   Scenario: Visit Past Forex Predictions
     Given good_luck
     When I visit "/"
