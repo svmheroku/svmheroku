@@ -33,7 +33,7 @@ Then /^I_should_see_lhs_links$/ do
   ml_html_a = my_links.map{|ml|ml.inner_html}
   ml_html_a.sort.should == ["About", "Blog", "Books", "Contact", "Facebook Page", "Forum", "Glossary", "Leadership Team", "Predictions", "Site Map", "Terms of Service", "Twitter Feed", "svm.heroku.com"]
   href_a = my_links.map{|l| l.attributes["href"].value}
-  href_a.sort.should == ["/", "/predictions", "/r10/index", "/r10/site_map", "/r10/uc", "/r10/uc", "/r10/uc", "/r10/uc", "/r10/uc", "/r10/uc", "/r10/uc", "/r10/uc", "/r10/uc"]
+  href_a.sort.should == ["/", "/about", "/predictions", "/r10/site_map", "/r10/uc", "/r10/uc", "/r10/uc", "/r10/uc", "/r10/uc", "/r10/uc", "/r10/uc", "/r10/uc", "/r10/uc"]
 end
 
 Then /^I_should_see_url "([^"]*)"$/ do |uurl|

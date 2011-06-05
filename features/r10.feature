@@ -32,6 +32,5 @@ Feature: See r10 index action
   Scenario: Match slash-about to /r10/index
     Given good_luck
     When I visit "/about"
-    And smtp
     Then I should see "About"
 
