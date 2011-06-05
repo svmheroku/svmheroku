@@ -9,4 +9,8 @@ Feature: Visit site_map
     And I_should_see_url "/site_map"
     And the_response_header_should_show_page_is_cached
 
+  Scenario: Study site_map links
+    Given good_luck
+    When I visit "/site_map"
+    Then I_should_see_forex_predictions
 
