@@ -40,4 +40,4 @@ Feature: See r10 index action
     Given good_luck
     When I visit "/about"
     Then I should see "About"
-
+    And I should see "Site Map> About"
