@@ -13,4 +13,5 @@ Feature: Visit site_map
     Given good_luck
     When I visit "/site_map"
     Then I_should_see_forex_predictions
+    And I_should_see_us_stock_predictions
 
