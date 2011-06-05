@@ -4,6 +4,7 @@ Svm::Application.routes.draw do
   #   match 'products/:id' => 'catalog#view'
   # Keep in mind you can assign values other than :controller and :action
   match 'about' => 'r10#index'
+  match 'site_map' => 'r10#site_map'
 
   # Sample of named route:
   #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
