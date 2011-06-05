@@ -28,3 +28,10 @@ Feature: See r10 index action
     Then I should see "Site Map"
     And the_response_header_should_show_page_is_cached
 
+  @about
+  Scenario: Match slash-about to /r10/index
+    Given good_luck
+    When I visit "/about"
+    And smtp
+    Then I should see "About"
+

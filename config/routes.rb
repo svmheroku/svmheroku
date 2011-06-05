@@ -1,13 +1,9 @@
 Svm::Application.routes.draw do
 
-  get "predictions/index"
-
-  # The priority is based upon order of creation:
-  # first created -> highest priority.
-
   # Sample of regular route:
   #   match 'products/:id' => 'catalog#view'
   # Keep in mind you can assign values other than :controller and :action
+  match 'about' => 'r10#index'
 
   # Sample of named route:
   #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
