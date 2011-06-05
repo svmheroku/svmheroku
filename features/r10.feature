@@ -16,6 +16,14 @@ Feature: See r10 index action
     And I should see "layouts/application.html.slim" in a comment
     And I should see "views/r10/index.html.slim" in a comment
 
+  Scenario: Go to svm.heroku.com
+    Given good_luck
+    And I visit "/"
+    When I follow "svm.heroku.com"
+    Then I should see "About"
+    And I should see "layouts/application.html.slim" in a comment
+    And I should see "views/r10/index.html.slim" in a comment
+
   Scenario: Add Rails-partial named lhs links
     Given good_luck
     When I visit "/"
@@ -28,7 +36,6 @@ Feature: See r10 index action
     Then I should see "Site Map"
     And the_response_header_should_show_page_is_cached
 
-  @about
   Scenario: Match slash-about to /r10/index
     Given good_luck
     When I visit "/about"
