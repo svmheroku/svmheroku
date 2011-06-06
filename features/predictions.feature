@@ -43,6 +43,7 @@ Feature: See predictions
     And I should see "Note:"
     And I should see "DanBot"
     And I_should_see_url "/fx_past/fx_past_wk2011_01_30"
+    And I should see "layouts/column_help.html.slim" in a comment
     And the_response_header_should_show_page_is_cached
 
   Scenario: Visit Week: 2011-05-29 Through 2011-06-03

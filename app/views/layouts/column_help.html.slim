@@ -1,0 +1,18 @@
+! doctype 5
+html
+  head
+    title http://svm.heroku.com
+    meta(http-equiv="content-type" content="text/html; charset=UTF-8")
+  body
+    /! layouts/column_help.html.slim
+    table
+      tr
+        td
+          h3
+            a(href="/")svm.heroku.com
+      tr
+        td(valign="top")
+          = render :partial => "layouts/lhs_links"
+        td
+          =yield
+          = render :partial => "column_help"
