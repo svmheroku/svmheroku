@@ -10,6 +10,17 @@ Feature: See predictions
     And I_should_see_url "/predictions"
     And the_response_header_should_show_page_is_cached
 
+  Scenario: Visit US Stock Predictions
+    Given good_luck
+    When I visit "/"
+    And I follow "Predictions"
+    And I follow "US Stocks"
+    Then I should see "Results Of Past US Stock Predictions"
+    And  I should see "New US Stock Predictions"
+    And  I should see "Site Map>Predictions> US Stocks"
+    And I_should_see_url "/predictions/us_stk"
+    And the_response_header_should_show_page_is_cached
+
   Scenario: Visit Forex Predictions
     Given good_luck
     When I visit "/"
