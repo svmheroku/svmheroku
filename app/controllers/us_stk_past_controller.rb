@@ -1,0 +1,2 @@
+class UsStkPastController < ApplicationController
+end
