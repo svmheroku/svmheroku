@@ -1,0 +1,227 @@
+/
+  _column_help.haml
+
+:javascript
+  $(document).ready(function() {
+    $("div#help4_column_help").hide();
+    $("div#help4_currencypair").hide();
+    $("div#help4_gmttimeathour0").hide();
+    $("div#help4_danbotscoreathour0").hide();
+    $("div#help4_scoretype").hide();
+    $("div#help4_priceathour0").hide();
+    $("div#help4_priceafter1hour").hide();
+    $("div#help4_normalized1hrgain").hide();
+    $("div#help4_gmttimeathour6timetocloseposition").hide();
+
+    $("a.currencypair").click(function(event){
+      $("div#help4_currencypair").dialog({ minWidth: 300 });
+    });
+
+    $("a.gmttimeathour6(timetocloseposition)").click(function(event){
+      $("div#help4_gmttimeathour6(timetocloseposition)").dialog({ minWidth: 300 });
+    });
+
+    $("a.gmttimeathour0").click(function(event){
+      $("div#help4_gmttimeathour0").dialog({ minWidth: 300 });
+    });
+
+    $("a.danbotscoreathour0").click(function(event){
+      $("div#help4_danbotscoreathour0").dialog({ minWidth: 550 });
+    });
+
+    $("a.scoretype").click(function(event){
+      $("div#help4_scoretype").dialog({ minWidth: 300 });
+    });
+
+    $("a.priceathour0").click(function(event){
+      $("div#help4_priceathour0").dialog({ minWidth: 300 });
+    });
+
+    $("a.priceafter1hour").click(function(event){
+      $("div#help4_priceafter1hour").dialog({ minWidth: 300 });
+    });
+
+    $("a.normalized1hrgain").click(function(event){
+      $("div#help4_normalized1hrgain").dialog({ minWidth: 300 });
+    });
+
+    $("a.gmttimeathour6timetocloseposition").click(function(event){
+      $("div#help4_gmttimeathour6timetocloseposition").dialog({ minWidth: 300 });
+    });
+  });
+
+#help4_column_help
+  %hr/
+  %h4 Pop-Up Help
+  If you can read this text, that means you probably have JavaScript turned off.
+  %br/
+  %br/
+  This site mostly works okay if you have JavaScript turned off.
+  %br/
+  %br/
+  One thing which will not work is pop-up-help messages.
+  %br/
+  %br/
+  If you want to read the pop-up-help messages while you have JavaScript turned off,
+  you will find them below this line.
+  %hr/
+
+#help4_currencypair(title="Column Help")
+  %h4 Currency-Pair
+  Currency-pairs have names like EUR/USD.
+  %br/
+  %br/
+  The name on the left is the currency getting bought.
+  The name on the right is the currency I use to pay for the currency on the left.
+  %br/
+  %br/
+  So, if I buy the EUR/USD pair, I am buying EUR with USD.
+  %br/
+  %br/
+  If I sell the EUR/USD pair, I am selling EUR and receiving USD.
+  By convention, some pairs are rarely referred to.
+  For example, the EUR/USD pair is often mentioned in the media, but the USD/EUR pair is not.
+
+#help4_gmttimeathour0(title="Column Help")
+  %h4 GMT / UTC Time at Hour 0
+  This column contains GMT/UTC timestamps for each prediction-score.
+  %br/
+  %br/
+  During winter, GMT is 5 hours ahead of EST, 8 hours ahead of PST, and 8 hours behind JST.
+  %br/
+  %br/
+  During summer, GMT is 4 hours ahead of EDT, 7 hours ahead of PDT, 1 hour behind BST, and 8 hours behind JST.
+  %br/
+  %br/
+  The current GMT/UTC time can be seen here:
+  %a(target="t" href="http://tycho.usno.navy.mil/cgi-bin/timer.pl")http://tycho.usno.navy.mil/cgi-bin/timer.pl
+  %br/
+  %br/
+  During the winter, the current time in London is identical to GMT/UTC time:
+  %a(target="g" href="http://www.google.com/search?q=current+time+in+London")
+    http://www.google.com/search?q=current+time+in+London
+  %br/
+
+#help4_danbotscoreathour0(title="Column Help")
+  %h4 DanBot-Score
+  =render :partial => "fx_column_help_danbot"
+
+#help4_scoretype(title="Column Help")
+  %h4 Score Type
+  The values in this column are redundant.
+  %br/
+  %br/
+  If the DanBot-score is less than zero, I see that as a signal to sell.
+  Otherwise it is a buy signal.
+  %br/
+
+#help4_priceathour0(title="Column Help")
+  %h4 Price at Hour 0
+  Every five minutes, for each of the 11 currency-pairs, I feed the DanBot two pieces of information.
+  %br/
+  %br/
+  I tell it the price of the pair and I tell DanBot what time it is (GMT time).
+  I refer to the price as the "Price at Hour 0".
+  %br/
+  %br/
+  If the DanBot calculates a prediction-score that I like (below -0.55 or above +0.55) I wait for 1 hour.
+  %br/
+  %br/
+  Then I decide to either ignore the prediction
+  (usually because of a large price-move move in the last hour),
+  or I follow the prediction and open a position in the currency-pair.
+  %br/
+  %br/
+  Then I close the position 5 hours later (using a clock controlled order in my brokerage account).
+  %br/
+  %br/
+  I consider a price-move large (during a 1 hour period)
+  if its normalized gain is below -0.0010 or above +0.0010 (which is a move of 0.1%).
+  %br/
+  %br/
+
+#help4_priceafter1hour(title="Column Help")
+  %h4 Price After 1 Hour
+  If the DanBot calculates a prediction-score that I like (below -0.55 or above +0.55) I wait for 1 hour.
+  %br/
+  %br/
+  The price for the pair at that time is displayed here.
+  %br/
+  %br/
+  If the values here are blank either we are not at Hour 1 yet
+  or the site has encountered software defects.
+  These are usually noticed quickly and thus rapidly fixed.
+  %br/
+
+#help4_normalized1hrgain(title="Column Help")
+  %h4 Normalized 1 Hour Gain
+  After the DanBot issues a prediction-score for a pair, I wait 1 hour.
+  %br/
+  %br/
+  I call this point in time, "Hour 1".
+  %br/
+  %br/
+  Then, I look at the change in the price of the pair during that 1 hour.
+  %br/
+  %br/
+  Next, I divide that price-change by the price at Hour 0.
+  %br/
+  %br/
+  I call this ratio the "Normalized 1 Hour Gain".
+  %br/
+  %br/
+  If this ratio is greater than -0.0010,
+  and if the DanBot-score is less than -0.55,
+  then I will open a short-position in the corresponding pair for 5 hours and then close it.
+  %br/
+  %br/
+  I refer to that moment in time as "Hour 6" because it is exactly 6 hours after the DanBot had calculated the score for that position.
+  %br/
+  %br/
+  If this ratio is less than +0.0010,
+  and if the DanBot-score is greater than +0.55,
+  then I will open a long-position in the corresponding pair for 5 hours and then close it at Hour 6.
+  %br/
+  %br/
+  Typically I rely on clock controlled orders in my brokerage account to close a position at Hour 6.
+  %br/
+  %br/
+  When I open a position in a currency pair, I usually do that manually at the keyboard.
+  %br/
+  %br/
+  Usually I act by calculating the Normalized 1 Hour Gain ratio in my head 
+  at exactly Hour 1 using the price displayed by my brokerage UI.
+  I dont rely on this website to calculate and then display the ratio for me.
+  %br/
+  %br/
+  Another way I often operate is to completely ignore the Normalized 1 Hour Gain ratio.
+  I act based solely on the value of the DanBot-score.
+  %br/
+  %br/
+  In that situation I just look for a DanBot-score issued within the past hour.
+  Then I look at the price of the corresponding pair in my brokerage UI.
+  %br/
+  %br/
+  If the price has not changed much or if it is favorable compared to the price at Hour 0,
+  I then open a position in the pair until exactly Hour 6 and then close it using a clock controlled order.
+  %br/
+  %br/
+  This second way of reacting to DanBot-score is less disciplined than the first
+  but I have validated that it is an effective way to trade using back-testing.
+  %br/
+
+#help4_gmttimeathour6timetocloseposition(title="Column Help")
+  %h4 GMT Time at Hour 6
+  I have configured SVM so that it only looks for lucrative positions held for a duration of 6 hours.
+  %br/
+  %br/
+  This strategy allows me to enter a clock-triggered close-order immediately after I open each postion.
+  %br/
+  %br/
+  After I open a position (usually at Hour 1) and then I enter a clock-triggered close-order (to close the position 5 hours later at Hour 6), I can go play golf.
+  %br/
+  %br/
+  I dislike any strategy which requires me to hover near my keyboard for hours or days to ensure that my attention captures signals from a server to close positions.
+  %br/
+
+  

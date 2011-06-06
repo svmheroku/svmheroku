@@ -1,0 +1,175 @@
+/
+  app/views/us_stk_new/_column_help.haml
+  
+
+:javascript
+  $(document).ready(function() {
+    $("div#help4_column_help").hide();
+    $("div#help4_stockticker").hide();
+    $("div#help4_gmttimeathour0").hide();
+    $("div#help4_priceathour0").hide();
+    $("div#help4_danbotscoreathour0").hide();
+    $("div#help4_scoretype").hide();
+    $("div#help4_gainathour1").hide();
+    $("div#help4_gmttimeathour24timetocloseposition").hide();
+
+    $("a.stockticker").click(function(event){
+      $("div#help4_stockticker").dialog({ minWidth: 300 });
+    });
+
+    $("a.gmttimeathour0").click(function(event){
+      $("div#help4_gmttimeathour0").dialog({ minWidth: 300 });
+    });
+
+    $("a.priceathour0").click(function(event){
+      $("div#help4_priceathour0").dialog({ minWidth: 300 });
+    });
+
+    $("a.danbotscoreathour0").click(function(event){
+      $("div#help4_danbotscoreathour0").dialog({ minWidth: 550 });
+    });
+
+    $("a.scoretype").click(function(event){
+      $("div#help4_scoretype").dialog({ minWidth: 300 });
+    });
+
+    $("a.gainathour1").click(function(event){
+      $("div#help4_gainathour1").dialog({ minWidth: 300 });
+    });
+
+    $("a.gmttimeathour24timetocloseposition").click(function(event){
+      $("div#help4_gmttimeathour24timetocloseposition").dialog({ minWidth: 300 });
+    });
+
+  });
+
+#help4_column_help
+  %hr/
+  %h4 Pop-Up Help
+  If you can read this text, that means you probably have JavaScript turned off.
+  %br/
+  %br/
+  This site mostly works okay if you have JavaScript turned off.
+  %br/
+  %br/
+  One thing which will not work is pop-up-help messages.
+  %br/
+  %br/
+  If you want to read the pop-up-help messages while you have JavaScript turned off,
+  you will find them below this line.
+  %hr/
+
+#help4_stockticker(title="Column Help")
+  %h4 Stock Ticker
+  This site displays short-term predictions on about 200 different stocks.
+  %br/
+  %br/
+  I identify a stock by its ticker also known as the stock symbol.
+  %br/
+  %br/
+  I usually do not identify a stock by the name of its company.
+  %br/
+
+#help4_gmttimeathour0(title="Column Help")
+  %h4 GMT / UTC Time at Hour 0
+  This column contains GMT/UTC timestamps for each prediction-score.
+  %br/
+  %br/
+  During winter, GMT is 5 hours ahead of EST, 8 hours ahead of PST, and 8 hours behind JST.
+  %br/
+  %br/
+  During summer, GMT is 4 hours ahead of EDT, 7 hours ahead of PDT, 1 hour behind BST, and 8 hours behind JST.
+  %br/
+  %br/
+  The current GMT/UTC time can be seen here:
+  %a(target="t" href="http://tycho.usno.navy.mil/cgi-bin/timer.pl")http://tycho.usno.navy.mil/cgi-bin/timer.pl
+  %br/
+  %br/
+  During the winter, the current time in London is identical to GMT/UTC time:
+  %a(target="g" href="http://www.google.com/search?q=current+time+in+London")
+    http://www.google.com/search?q=current+time+in+London
+  %br/
+
+#help4_priceathour0(title="Column Help")
+  %h4 Price at Hour 0
+  Every five minutes, for each of the tickers, I feed the DanBot two pieces of information.
+  %br/
+  %br/
+  I tell it the ticker's price and I tell DanBot what time it is (GMT time).
+  I refer to the price as the "Price at Hour 0".
+  %br/
+  %br/
+  If the DanBot calculates a prediction-score that I like (below -0.55 or above +0.55) I wait for 1 hour.
+  %br/
+  %br/
+  Then I decide to either ignore the prediction
+  (usually because of a large price-move move in the last hour),
+  or I follow the prediction and open a short or long position corresponding to that ticker.
+  %br/
+  %br/
+  Usually when I want to open a short position for a ticker, I instead buy a "near-the-money" put option from the options market.
+  %br/
+  %br/
+  %a(target="g" href="http://www.google.com/search?q=near+the+money+put+option")
+    http://www.google.com/search?q=near+the+money+put+option
+  %br/
+  %br/
+  Usually a put option exhibits the same price behavior as a short position.
+  %br/
+  %br/
+  One problem with put options is they are often not very liquid which is evident within the spread between the bid price and the ask price.
+  %br/
+  %br/
+  A simple rule I follow in the options market is avoid buying any option which has a spread which is more than 3% the price of the option.
+  %br/
+  %br/
+  An example of a ticker which has nice liquid put options is SPY:
+  %br/
+  %a(href="http://finance.yahoo.com/q/op?s=SPY+Options" target="y")http://finance.yahoo.com/q/op?s=SPY+Options
+  %br/
+  %br/
+  An example of a ticker which often has unattractive put options is VMW:
+  %br/
+  %a(href="http://www.google.com/finance/option_chain?q=VMW" target="y")http://www.google.com/finance/option_chain?q=VMW
+  %br/
+  %br/
+
+#help4_danbotscoreathour0(title="Column Help")
+  %h4 DanBot Score at Hour 0
+  =render :partial => "column_help_danbot"
+
+#help4_scoretype(title="Column Help")
+  %h4 Score Type
+  The values in this column are redundant.
+  %br/
+  %br/
+  If the DanBot-score is less than zero, I see that as a signal to sell.
+  Otherwise it is a buy signal.
+  %br/
+
+#help4_gainathour1(title="Column Help")
+  %h4 Gain at Hour 1
+  If the DanBot calculates a prediction-score that I like (below -0.55 or above +0.55) I wait for 1 hour.
+  %br/
+  %br/
+  The gain for the ticker over that 1 hour duration is displayed here.
+  %br/
+  %br/
+  If the values here are blank either we are not at Hour 1 yet
+  or the site has encountered software defects.
+  These are usually noticed quickly and thus rapidly fixed.
+  %br/
+
+#help4_gmttimeathour24timetocloseposition(title="Column Help")
+  %h4 GMT Time at Hour 24
+  I have configured SVM so that it only looks for lucrative positions held for a duration of 24 hours.
+  %br/
+  %br/
+  This strategy allows me to enter a clock-triggered close-order immediately after I open each postion.
+  %br/
+  %br/
+  After I open a position (usually at Hour 1) and then I enter a clock-triggered close-order (to close the position 23 hours later at Hour 24), I can focus on other tasks.
+  %br/
+  %br/
+  I dislike any strategy which requires me to hover near my keyboard for hours or days to ensure that my attention captures signals from a server to close positions.
+  %br/

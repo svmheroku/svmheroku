@@ -1,0 +1,43 @@
+The DanBot is predictive software I wrote and perfected during the years 2008 through 2011.
+%br/
+%br/
+I run the DanBot on a set of servers which feed data to this website.
+%br/
+%br/
+The DanBot relies on a machine learning algorithm called:
+%a(target="w" href="http://en.wikipedia.org/wiki/Support_vector_machine")Support Vector Machine (SVM).
+%br/
+%br/
+It is easy to find discussion about predicting attributes in time series data using SVM:
+%a(target="g" href="http://www.google.com/search?q=using+svm+algorithm+to+predict+time+series")
+  SVM and Time Series Data
+%br/
+%br/
+The DanBot issues prediction-scores on almost 200 stocks every 5 minutes when the market is open.
+%br/
+%br/
+If a score is between -0.55 and 0.55, then I ignore it.
+%br/
+%br/
+If a score is greater than 0.55 on a stock ticker at "Hour 0",
+then the DanBot is predicting that the stock price will be higher at "Hour 24" which is exactly 24 hours after Hour 0.
+%br/
+%br/
+Likewise, if a score is less than -0.55 on a ticker at Hour 0,
+then the DanBot is predicting that the stock price will be lower after 24 hours.
+%br/
+%br/
+I ignore the vast majority of scores
+(because they are usually between -0.55 and 0.55).
+%br/
+%br/
+Once I see a score that I like, I wait until the score is 1 hour old (I call this point in time: "Hour 1").
+%br/
+%br/
+Then I check the price of the stock using a realtime-quote from the UI of my brokerage account.
+%br/
+%br/
+If the price has moved less than 0.5% during that 1 hour,
+I will open a position in that stock for 23 hours and then I will close it at Hour 24.
+%br/
+
