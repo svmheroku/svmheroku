@@ -30,4 +30,35 @@ Feature: See predictions
     And I_should_see_url "/fx_past"
     And the_response_header_should_show_page_is_cached
 
+  Scenario: Visit Week: 2011-01-30 Through 2011-02-04
+    Given good_luck
+    When I visit "/"
+    And I follow "Predictions"
+    And I follow "Forex Predictions"
+    And I follow "Past Forex Predictions"
+    And I follow "Week: 2011-01-30 Through 2011-02-04"
+    Then I should see "Week of: 2011_01_30"
+    And I should see "aud_jpy"
+    And I should see "usd_jpy"
+    And I should see "Note:"
+    And I should see "DanBot"
+    And I_should_see_url "/fx_past/fx_past_wk2011_01_30"
+    And the_response_header_should_show_page_is_cached
+
+  Scenario: Visit Week: 2011-05-29 Through 2011-06-03
+    Given good_luck
+    When I visit "/"
+    And I follow "Predictions"
+    And I follow "Forex Predictions"
+    And I follow "Past Forex Predictions"
+    And I follow "Week: 2011-05-29 Through 2011-06-03"
+    Then I should see "Week of: 2011_05_29"
+    And I should see "aud_jpy"
+    And I should see "usd_jpy"
+    And I should see "Note:"
+    And I should see "DanBot"
+    And I_should_see_url "/fx_past/fx_past_wk2011_05_29"
+    And the_response_header_should_show_page_is_cached
+
+
 
