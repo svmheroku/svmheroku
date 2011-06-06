@@ -28,6 +28,8 @@ Feature: See predictions
     And I follow "US Stocks"
     And I follow "Results Of Past US Stock Predictions"
     Then I should see "Results Of Past US Stock Predictions"
+    And I should see "Week: 2011-03-14 Through 2011-03-18"
+    And I should see "Week: 2011-05-31 Through 2011-06-03"
     And I_should_see_url "/us_stk_past"
     And the_response_header_should_show_page_is_cached
 
