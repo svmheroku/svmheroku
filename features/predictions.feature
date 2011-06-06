@@ -60,5 +60,12 @@ Feature: See predictions
     And I_should_see_url "/fx_past/fx_past_wk2011_05_29"
     And the_response_header_should_show_page_is_cached
 
-
-
+  Scenario: Visit New Forex Predictions
+    Given good_luck
+    When I visit "/"
+    And I follow "Predictions"
+    And I follow "Forex Predictions"
+    And I follow "New Forex Predictions"
+    Then I should see "New Forex Predictions"
+    And I_should_see_url "/fx_new"
+    And the_response_header_should_show_page_is_cached
