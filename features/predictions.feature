@@ -68,5 +68,8 @@ Feature: See predictions
     And I follow "Forex Predictions"
     And I follow "New Forex Predictions"
     Then I should see "New Forex Predictions"
+    And  I should see "GMT Time"
+    And  I should see "Currency-Pair"
+    And  I should see "you probably have JavaScript turned off"
     And I_should_see_url "/fx_new"
     And the_response_header_should_show_page_is_cached
