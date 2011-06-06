@@ -1,0 +1,2 @@
+class UsStkNewController < ApplicationController
+end

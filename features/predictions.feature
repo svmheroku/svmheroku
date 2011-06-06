@@ -43,6 +43,15 @@ Feature: See predictions
     And I_should_see_url "/us_stk_past/us_stk_past_wk2011_04_04"
     And the_response_header_should_show_page_is_cached
 
+  Scenario: Visit us_stk_new
+    Given good_luck
+    When I visit "/"
+    And I follow "Predictions"
+    And I follow "US Stocks"
+    And I follow "New US Stock Predictions"
+    And I_should_see_url "/us_stk_new"
+    And the_response_header_should_show_page_is_cached
+
   Scenario: Visit Forex Predictions
     Given good_luck
     When I visit "/"
