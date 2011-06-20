@@ -55,7 +55,7 @@ end
 
 Then /^I_should_see_favicon$/ do
   rspns = get "/favicon.ico"
-  rspns.content_length.should == 198
+  rspns.content_length.should == 318
   rspns.content_type.should == "image/vnd.microsoft.icon"
   rspns.status.should == 200
   # I should maybe also compare a hash of the file.
