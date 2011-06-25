@@ -1,0 +1,37 @@
+<pre>
+
+06:35:05 SQL> --
+06:35:05 SQL> -- faq_ibm.sql
+06:35:05 SQL> --
+06:35:05 SQL> 
+06:35:05 SQL> SELECT AVG(gain1month),COUNT(gain1month),TO_CHAR(ydate,'Mon'),TO_CHAR(ydate,'MM')FROM
+06:35:05   2  (
+06:35:05   3  SELECT
+06:35:05   4  ydate
+06:35:05   5  ,(LEAD(clse,20,NULL)OVER(ORDER BY ydate)-clse) gain1month
+06:35:05   6  FROM ystk
+06:35:05   7  WHERE tkr='IBM'
+06:35:05   8  AND ydate BETWEEN'1990-01-01'AND'2010-12-31'
+06:35:05   9  )
+06:35:05  10  GROUP BY TO_CHAR(ydate,'Mon'),TO_CHAR(ydate,'MM')
+06:35:05  11  ORDER BY TO_CHAR(ydate,'MM')
+06:35:05  12  /
+
+AVG(GAIN1MONTH) COUNT(GAIN1MONTH) TO_ TO
+--------------- ----------------- --- --
+     .329631336               434 Jan 01
+     -.65783582               402 Feb 02
+     .390826087               460 Mar 03
+      3.7425576               434 Apr 04
+     -8.2158465               443 May 05
+     .715300668               449 Jun 06
+     1.43240449               445 Jul 07
+     .012176724               464 Aug 08
+     -1.7175294               425 Sep 09
+     2.69894624               465 Oct 10
+     1.81727273               429 Nov 11
+     1.47014118               425 Dec 12
+
+12 rows selected.
+
+</pre>
