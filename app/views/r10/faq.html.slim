@@ -6,6 +6,7 @@ h4 Frequently Asked Questions (FAQ)
 
 | Q: How does RoboLuck.com work?
 br/
+br/
 | A: RoboLuck.com depends on predictive software I wrote.  I call this software the "DanBot".
 | The DanBot dpends on an algorithm named SVM which is described in Wikipedia here ->
 a(href="http://en.wikipedia.org/wiki/Support_vector_machine" target="w")http://en.wikipedia.org/wiki/Support_vector_machine
@@ -18,15 +19,17 @@ br/
 | Suppose that your friend asks, "If I buy IBM in July and sell it a month later, should I expect a profit?".
 br/
 br/
-| You don't know so you go to Yahoo and download historical data for IBM from this URL ->
+| You don't know so you go to Yahoo and download historical data for IBM from the URL listed below:
+br/
+br/
 a(href="http://finance.yahoo.com/q/hp?s=IBM+Historical+Prices" target="y")http://finance.yahoo.com/q/hp?s=IBM+Historical+Prices
 br/
 br/
 | You analyze the downloaded data using a spreadsheet.
-| You discover that on average (spanning the years 1990 through 2010), IBM goes down when it is bought in July and sold a month later.
+| You discover that on average (spanning the years 1990 through 2010), IBM share price goes down when it is bought in July and sold a month later.
 br/
 br/
-| Then you issue a prediction, "If you buy IBM in July and sell it a month later you should not expect a profit".
+| Then you issue a prediction, "If you buy IBM in July and sell it a month later you should expect a loss".
 br/
 br/
 | In the above scenario only 3 types of information are used to make the prediction:
@@ -34,7 +37,6 @@ ul
   li The name of the stock (in this case IBM)
   li A month name (in this case July)
   li A history duration (in this case the years 1990 through 2010)
-br/
 br/
 | The above scenario gives you a general idea about how the DanBot works.
 br/
