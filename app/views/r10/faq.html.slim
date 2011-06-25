@@ -16,23 +16,29 @@ br/
 | So I offer a simplistic scenario which may help you understand DanBot behavior.
 br/
 br/
-| Suppose that your friend asks, "If I buy IBM in July and sell it a month later, should I expect a profit?".
+First, we assume that past behavior of a stock price can predict future behavior of a stock price better than the act of flipping a coin.
 br/
 br/
-| You don't know so you go to Yahoo and download historical data for IBM from the URL listed below:
+If you do not believe this assumption, then you should ignore RoboLuck.com and study things which you think are true.
+br/
+br/
+| Next, imagine I have a SimpleBot and I ask it, "If I buy IBM in July and sell it a month later, should I expect a profit?".
+br/
+br/
+| SimpleBot then goes to Yahoo and downloads historical data for IBM from the URL listed below:
 br/
 br/
 a(href="http://finance.yahoo.com/q/hp?s=IBM+Historical+Prices" target="y")http://finance.yahoo.com/q/hp?s=IBM+Historical+Prices
 br/
 br/
-| You analyze the downloaded data using a spreadsheet.
-| You discover that on average (spanning the years 1990 through 2010), IBM share price goes down when it is bought in July and sold a month later.
+| SimpleBot analyzes the downloaded data using a spreadsheet.
+| SimpleBot sees that on average (spanning the years 1990 through 2010), IBM share price goes down when it is bought in July and sold a month later.
 br/
 br/
-| Then you issue a prediction, "If you buy IBM in July and sell it a month later you should expect a loss".
+| SimpleBot issues a prediction, "If you buy IBM in July and sell it a month later you should expect a loss".
 br/
 br/
-| In the above scenario only 3 types of information are used to make the prediction:
+| SimpleBot uses 3 types of information to make the prediction:
 ul
   li The name of the stock (in this case IBM)
   li A month name (in this case July)
@@ -40,6 +46,21 @@ ul
 br/
 | The above scenario gives you a general idea about how the DanBot works.
 br/
+br/
+| SimpleBot differs from DanBot in some significant ways:
+
+ul
+  li SimpleBot only gives a prediction
+  li DanBot assigns a confidence level to each prediction
+  li SimpleBot only looks at IBM
+  li DanBot looks at many stocks (and 11 Forex-pairs)
+  li SimpleBot looks at one duration of history (20 years)
+  li DanBot looks at several durations of history
+  li SimpleBot gives a prediction for a stock (IBM) held for 1 month (when it is bought in July)
+  li DanBot gives predictions for a stock held for 24 hours (or over the weekend)
+  li DanBot gives a prediction for a Forex-pair held for 6 hours (or over the weekend)
+  li SimpleBot accepts 3 inputs: "IBM", "July", "List of prices for years 1990 through 2010"
+  li DanBot accepts many inputs
 br/
 | If you believe that past behavior of a stock can be used to predict future behavior of a stock,
 | then the predictions issued by the DanBot may be of interest to you.
