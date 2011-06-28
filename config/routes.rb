@@ -6,6 +6,7 @@ Svm::Application.routes.draw do
   match 'site_map' => 'r10#site_map'
   match 'faq' => 'r10#faq'
   match 'contact' => 'r10#contact'
+  match 'blog' => 'r10#blog'
 
   # Sample of named route:
   #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
