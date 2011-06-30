@@ -45,8 +45,9 @@ br/
 br/
 br/
 
-| Many software engineers consider it a best practice to build software as components.  
-| And, the initial effort of building each component is actually building the tests for each component.
+| The software I write has a modular nature.
+| And, my initial effort to build each piece is focused building tests for each piece.  
+| After the tests are written, I use their output to help me write my modular software.
 br/
 br/
 
