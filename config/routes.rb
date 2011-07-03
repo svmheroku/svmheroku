@@ -8,6 +8,7 @@ Svm::Application.routes.draw do
   match 'contact' => 'r10#contact'
   match 'blog' => 'r10#blog'
   match 'leadership_team' => 'r10#leadership_team'
+  match 'glossary' => 'r10#glossary'
 
   # Sample of named route:
   #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
