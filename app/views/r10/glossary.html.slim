@@ -101,4 +101,43 @@ br/
 br/
 | If the newer gains depend on the older gains, this might be apparent via visual inspection of the scatter-plot.
 
+a(href="/glossary#vector")
+  h4#vector Vector
+| A scatter-plot is made of points.  And each point is made of two variables.  A vector is similar to a point.  A two dimensional vector, like a point, is made from two variables.  A set of two dimensional vectors is easy to visualize.  Just call them points and display them in a scatter-plot.  A vector can be made from 3 variables or any number of variables.  
+br/
+br/
+| Typically when I specify a vector from variables, I build it from variables that are easy to collect or know and then make the last variable the one which I want to predict.
+br/
+br/
+| Here is an example of such a vector (a four dimensional vector):
+ul
+  li 24 hour gain of IBM measured 10 hours ago
+  li 24 hour gain of IBM measured 5 minutes ago
+  li Slope of the 5-day moving average of IBM-price
+  li Gain of IBM between now and next 24 hours
+
+br/
+br/
+| When I try to visualize a set of three dimensional vectors, that is usually more difficult to see.
+| In some situations I might get lucky.  For example if the third variable in each vector is constrained to be 1 or 2, then I could visualize the set of three dimensional vectors as two scatter-plots.
+| Obviously as I encounter systems which have a large number of large vectors and I want to use these systems to find dependencies between the variables I can't rely on visualization of a scatter plot to gauge the dependency.
+br/
+br/
+| Instead, I need to rely on a calculation like Pearson's correlation to help me.
+
+
+a(href="/glossary#svm")
+  h4#svm Support Vector Machine (SVM)
+
+| Support Vector Machine (SVM) is a tool I can use to quantify the dependency between the last variable in a vector with the other variables in the vector.
+br/
+br/
+| And once this dependency is quatified I can use SVM to predict the value of the last variable in a vector when the values of the other variables are known.
+br/
+br/
+| A link to more discussion about SVM is displayed below:
+br/
+br/
+a(target="w" href="http://en.wikipedia.org/wiki/Support_vector_machine")http://en.wikipedia.org/wiki/Support_vector_machine
+
 
