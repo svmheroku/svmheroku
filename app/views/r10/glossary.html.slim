@@ -136,7 +136,7 @@ br/
 a(href="/glossary#svm")
   h4#svm Support Vector Machine (SVM)
 
-' Support Vector Machine (SVM) is a tool I can use to quantify the dependency between the last variable in a vector with the other variables in the vector.
+' Support Vector Machine (SVM) is an algorithm I can use to quantify the dependency between the last variable in a vector with the other variables in the vector.
 br/
 br/
 ' And once this dependency is quantified I can use SVM to predict the value of the last variable in a vector when the values of the other variables are known.
@@ -163,8 +163,24 @@ br/
 ' SVM is designed to calculate the "best" way to measure the separation between the black circles and the white circles.
 br/
 br/
+' The green line shows an attempt by SVM to measure the separation between the black circles and the white circles.
+br/
+br/
+' The blue line also shows an attempt by SVM to measure the separation between the black circles and the white circles.  
+' It's obvious from the diagram that the ble line does a better job than the green line.
+br/
+br/
+' Finally, the red line shows a optimal attempt by SVM to measure the separation between the black circles and the white circles.  
+br/
+br/
+' SVM practitioners refer to these lines as hyperplanes.  
+br/
+br/
+' Once an SVM-instance "knows" where the red-hyperplane resides, the algorithm can then make predictions.
+br/
+br/
 ' What is missing from the diagram is a vector displayed as a gray circle.  I would color it gray to indicate that x1 and x2 are known but x3 is unknown and that I want to predict it.  
-' Once the gray-circle-vector is plotted, I would see if the vector is to the left of the red-line or to the right of it.  
+' Once the gray-circle-vector is plotted, I would see if the vector is to the left of the red-hyperplane or to the right of it.  
 ' If the vector lands on the left, I'd predict that x3 is 1 else I'd predict it is 0.
-' SVM does not have eyes like I do.  Instead it would measure both the direction and distance of the gray circle from the red line.  It would then use this measurement to predict the value of x3.
+' SVM does not have eyes like I do.  Instead it would measure both the direction and distance of the gray circle from the red-hyperplane.  It would then use this measurement to predict the value of x3.
 
