@@ -1,6 +1,6 @@
 /! views/r10/glossary.html.slim
 a(href="/site_map")Site Map
-| > Glossary
+' > Glossary
 
 h4 Glossary
 
@@ -9,17 +9,17 @@ hr/
 a(href="/glossary#bot")
   h4#bot Bot
 
-| I use the term bot to describe software which copies fresh data from the internet at frequent intervals and then processes that data into more valuable data.
+' I use the term bot to describe software which copies fresh data from the internet at frequent intervals and then processes that data into more valuable data.
 
 br/
 br/
-| Wikipedia has a definition which matches my idea of a bot:
+' Wikipedia has a definition which matches my idea of a bot:
 br/
 br/
 a(target="w" href="http://en.wikipedia.org/wiki/Internet_bot")http://en.wikipedia.org/wiki/Internet_bot
 br/
 br/
-| This site relies on the "DanBot" which copies fresh data from the internet every 5 minutes and then issues a set of near-future-price-predictions for many stocks and 11 currency pairs:
+' This site relies on the "DanBot" which copies fresh data from the internet every 5 minutes and then issues a set of near-future-price-predictions for many stocks and 11 currency pairs:
 br/
 br/
 a(href="/predictions")http://bot4.us/predictions
@@ -29,17 +29,17 @@ br/
 a(href="/glossary#scatter_plot")
   h4#scatter_plot Scatter-plot
 
-| Wikipedia has a definition which matches my idea of a scatter-plot:
+' Wikipedia has a definition which matches my idea of a scatter-plot:
 br/
 br/
 a(target="w" href="http://en.wikipedia.org/wiki/Scatter_plot")http://en.wikipedia.org/wiki/Scatter_plot
 br/
 br/
-| Visualization of a scatter-plot is useful for understanding the SVM Algorithm which is at the heart of the technology behind the DanBot.
+' Visualization of a scatter-plot is useful for understanding the SVM Algorithm which is at the heart of the technology behind the DanBot.
 br/
 br/
 
-| It is easy to see examples of scatter-plots at the URL below:
+' It is easy to see examples of scatter-plots at the URL below:
 br/
 br/
 
@@ -47,18 +47,18 @@ a(href="http://www.google.com/search?q=scatter+plot" target="g")http://www.googl
 br/
 br/
 
-| Once you understand that a scatter-plot can be used to convey a dependence of a variable on the vertical axis to a variable on the horizontal axis, then you might ask, "How do I quantify the strength and direction of this dependence?"
+' Once you understand that a scatter-plot can be used to convey a dependence of a variable on the vertical axis to a variable on the horizontal axis, then you might ask, "How do I quantify the strength and direction of this dependence?"
 
 br/
 br/
 
-| One answer to the above question is a statistical calculation called "Pearson's correlation" which I refer to as just "Correlation".
+' One answer to the above question is a statistical calculation called "Pearson's correlation" which I refer to as just "Correlation".
 
 
 a(href="/glossary#correlation")
   h4#correlation Correlation
 
-| Wikipedia has an article on Correlation:
+' Wikipedia has an article on Correlation:
 br/
 br/
 
@@ -66,76 +66,74 @@ a(target="w" href="http://en.wikipedia.org/wiki/Correlation_and_dependence")http
 br/
 br/
 
-| When you look at a scatter-plot of many points you can usually detect the strength and direction of their correlation.
+' When you look at a scatter-plot of many points you can usually detect the strength and direction of their correlation.
 
 br/
 br/
-| For Earth, if you plotted distance from the equator on the horizontal axis and average temperature on the vertical axis, you would see a cluster of points which leans to the left.
+' For Earth, if you plotted distance from the equator on the horizontal axis and average temperature on the vertical axis, you would see a cluster of points which leans to the left.
 br/
 br/
-| This scatter-plot describes the fact that as a thermometer moves away from the equator, it records cooler temperatures.
+' This scatter-plot describes the fact that as a thermometer moves away from the equator, it records cooler temperatures.
 br/
 br/
-| This situation is an example of negative correlation.
+' This situation is an example of negative correlation.
 br/
 br/
-| If you want an example of positive correlation, create a scatter plot of average human height on the horizontal axis and average human weight on the vertical axis.
+' If you want an example of positive correlation, create a scatter plot of average human height on the horizontal axis and average human weight on the vertical axis.
 br/
 br/
-| This scatter-plot tells me that taller humans usually weigh more that shorter humans.
+' This scatter-plot tells me that taller humans usually weigh more that shorter humans.
 
 br/
 br/
-| Since the author of the scatter-plot has placed height on the horizontal axis, he/she is expressing the opinion that average weight depends on average height.
+' Since the author of the scatter-plot has placed height on the horizontal axis, he/she is expressing the opinion that average weight depends on average height.
 br/
 br/
 
-| Suppose I want to use a scatter plot to help me predict the gain of IBM-price 24 hours after an initial 24-hour-IBM-price-gain has been measured?
+' Suppose I want to use a scatter plot to help me predict the gain of IBM-price 24 hours after an initial 24-hour-IBM-price-gain has been measured?
 
 br/
 br/
-| This would be easy to do.  Every 5 minutes when the market is open I collect the price of IBM, and then I look back in time and collect two prices for IBM.  I get the price for 48 hours ago and the price 24 hours ago.  
-| Next, I calculate two gains, an older gain and a newer gain.  
-| Then, I create a scatter-plot with the older gain on the horizontal axis.
+' This would be easy to do.  Every 5 minutes when the market is open I collect the price of IBM, and then I look back in time and collect two prices for IBM.  I get the price for 48 hours ago and the price 24 hours ago.  
+' Next, I calculate two gains, an older gain and a newer gain.  
+' Then, I create a scatter-plot with the older gain on the horizontal axis.
 br/
 br/
-| If the newer gains depend on the older gains, this might be apparent via visual inspection of the scatter-plot.
+' If the newer gains depend on the older gains, this might be apparent via visual inspection of the scatter-plot.
 
 a(href="/glossary#vector")
   h4#vector Vector
-| A scatter-plot is made of points.  And each point is made of two variables.  A vector is similar to a point.  A two dimensional vector, like a point, is made from two variables.  A set of two dimensional vectors is easy to visualize.  Just call them points and display them in a scatter-plot.  A vector can be made from 3 variables or any number of variables.  
+' A scatter-plot is made of points.  And each point is made of two variables.  A vector is similar to a point.  A two dimensional vector, like a point, is made from two variables.  A set of two dimensional vectors is easy to visualize.  Just call them points and display them in a scatter-plot.  A vector can be made from 3 variables or any number of variables.  
 br/
 br/
-| Typically when I specify a vector from variables, I build it from variables that are easy to collect or know and then make the last variable the one which I want to predict.
+' Typically when I specify a vector from variables, I build it from variables that are easy to collect or know and then make the last variable the one which I want to predict.
 br/
 br/
-| Here is an example of such a vector (a four dimensional vector):
+' Here is an example of such a vector (a four dimensional vector):
 ul
   li 24 hour gain of IBM measured 10 hours ago
   li 24 hour gain of IBM measured 5 minutes ago
   li Slope of the 5-day moving average of IBM-price
   li Gain of IBM between now and next 24 hours
 
+' When I try to visualize a set of three dimensional vectors, that is usually more difficult to see.  
+' In some situations I might get lucky.  For example if the third variable in each vector is constrained to be 1 or 2, then I could visualize the set of three dimensional vectors as two scatter-plots.  
+' Obviously as I encounter systems which have a large number of large vectors and I want to use these systems to find dependencies between the variables I can't rely on visualization of a scatter plot to gauge the dependency.  
 br/
 br/
-| When I try to visualize a set of three dimensional vectors, that is usually more difficult to see.
-| In some situations I might get lucky.  For example if the third variable in each vector is constrained to be 1 or 2, then I could visualize the set of three dimensional vectors as two scatter-plots.
-| Obviously as I encounter systems which have a large number of large vectors and I want to use these systems to find dependencies between the variables I can't rely on visualization of a scatter plot to gauge the dependency.
-br/
-br/
-| Instead, I need to rely on a calculation like Pearson's correlation to help me.
+' Instead, I need to rely on a calculation like Pearson's correlation to help me.
 
 
 a(href="/glossary#svm")
   h4#svm Support Vector Machine (SVM)
 
-| Support Vector Machine (SVM) is a tool I can use to quantify the dependency between the last variable in a vector with the other variables in the vector.
+' Support Vector Machine (SVM) is a tool I can use to quantify the dependency between the last variable in a vector with the other variables in the vector.
 br/
 br/
-| And once this dependency is quatified I can use SVM to predict the value of the last variable in a vector when the values of the other variables are known.
+' And once this dependency is quatified I can use SVM to predict the value of the last variable in a vector when the values of the other variables are known.
 br/
 br/
-| A link to more discussion about SVM is displayed below:
+' A link to more discussion about SVM is displayed below:
 br/
 br/
 a(target="w" href="http://en.wikipedia.org/wiki/Support_vector_machine")http://en.wikipedia.org/wiki/Support_vector_machine
