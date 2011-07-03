@@ -137,5 +137,25 @@ br/
 br/
 br/
 a(target="w" href="http://en.wikipedia.org/wiki/Support_vector_machine")http://en.wikipedia.org/wiki/Support_vector_machine
-
+br/
+br/
+' An image which helps me visualize SVM at work is displayed below:
+br/
+br/
+img(src="/images/svm3d.png" alt="SVM_at_work")
+br/
+br/
+' It is showing a set of 16 vectors which are each 3 dimensional vectors.  
+' The first variable in each vector corresponds to the x1 axis and the second variable in each vector corresponds to the x2 axis.  
+br/
+br/
+' The third variable, x3, in each vector is constrained to the values 0 or 1.  
+' If x3 is 1 it is displayed as a black circle else it appears as a white circle.  
+' SVM is designed to calculate the "best" way to measure the separation between the black circles and the white circles.
+br/
+br/
+' What is missing from the diagram is a vector displayed as a gray circle.  I would color it gray to indicate that x1 and x2 are known but x3 is unknown and that I want to predict it.  
+' Once the gray-circle-vector is plotted, I would see if the vector is to the left of the red-line or to the right of it.  
+' If the vector lands on the left, I'd predict that x3 is 1 else I'd predict it is 0.
+' SVM does not have eyes like I do.  Instead it would measure both the direction and distance of the gray circle from the red line.  It would then use this measurement to predict the value of x3.
 
