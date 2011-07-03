@@ -122,7 +122,10 @@ a(href="/glossary#vector")
 ' A scatter-plot is made of points.  And each point is made of two variables.  A vector is similar to a point.  A two dimensional vector, like a point, is made from two variables.  A set of two dimensional vectors is easy to visualize.  Just call them points and display them in a scatter-plot.  A vector can be made from 3 variables or any number of variables.  
 br/
 br/
-' Typically when I specify a vector from variables, I build it from variables that are easy to collect or know and then make the last variable the one which I want to predict.
+' Sometimes when I discuss vectors and the variables which make them up, I call the variables "attributes" instead of variables.  So, attribute is a synonym for variable.
+br/
+br/
+' Typically when I specify a vector from attributes, I build it from attributes that are easy to collect or know and then make the last attribute the one which I want to predict.
 br/
 br/
 ' Here is an example of such a vector (a four dimensional vector):
@@ -133,8 +136,8 @@ ul
   li Gain of IBM between now and next 24 hours
 
 ' When I try to visualize a set of three dimensional vectors, that is usually more difficult to see.  
-' In some situations I might get lucky.  For example if the third variable in each vector is constrained to be 1 or 2, then I could visualize the set of three dimensional vectors as two scatter-plots.  
-' Obviously as I encounter systems which have a large number of large vectors and I want to use these systems to find dependencies between the variables I can't rely on visualization of a scatter plot to gauge the dependency.  
+' In some situations I might get lucky.  For example if the third attribute in each vector is constrained to be 1 or 2, then I could visualize the set of three dimensional vectors as two scatter-plots.  
+' Obviously as I encounter systems which have a large number of large vectors and I want to use these systems to find dependencies between the attributes I can't rely on visualization of a scatter plot to gauge the dependency.  
 br/
 br/
 ' Instead, I need to rely on a calculation like Pearson's correlation to help me.
@@ -143,10 +146,10 @@ br/
 a(href="/glossary#svm")
   h4#svm Support Vector Machine (SVM)
 
-' Support Vector Machine (SVM) is an algorithm I can use to quantify the dependency between the last variable in a vector with the other variables in the vector.
+' Support Vector Machine (SVM) is an algorithm I can use to quantify the dependency between the last attribute in a vector with the other attributes in the vector.
 br/
 br/
-' And once this dependency is quantified I can use SVM to predict the value of the last variable in a vector when the values of the other variables are known.
+' And once this dependency is quantified I can use SVM to predict the value of the last attribute in a vector when the values of the other attributes are known.
 br/
 br/
 ' A link to more discussion about SVM is displayed below:
@@ -162,10 +165,10 @@ img(src="/images/svm3d.png" alt="SVM_at_work")
 br/
 br/
 ' It is showing a set of 16 vectors which are each 3 dimensional vectors.  
-' The first variable in each vector corresponds to the x1 axis and the second variable in each vector corresponds to the x2 axis.  
+' The first attribute in each vector corresponds to the x1 axis and the second attribute in each vector corresponds to the x2 axis.  
 br/
 br/
-' The third variable, x3, in each vector is constrained to the values 0 or 1.  
+' The third attribute, x3, in each vector is constrained to the values 0 or 1.  
 ' If x3 is 1 it is displayed as a black circle else it appears as a white circle.  
 ' SVM is designed to calculate the "best" way to measure the separation between the black circles and the white circles.
 br/
