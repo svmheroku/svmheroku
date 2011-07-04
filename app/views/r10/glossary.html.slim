@@ -141,7 +141,12 @@ ul
 br/
 br/
 ' Instead, I need to rely on a calculation like Pearson's correlation to help me.
-
+br/
+br/
+' Unfortunately, the Pearson's correlation calculation assumes we have a set of two dimensional vectors.  
+br/
+br/
+' If we are working with vectors that have 3 or more dimensions and we want to find dependencies between the attributes in the vectors, we need an algorithm which is more powerful than Pearson's correlation calculation.
 
 a(href="/glossary#svm")
   h4#svm Support Vector Machine (SVM)
@@ -158,7 +163,7 @@ br/
 a(target="w" href="http://en.wikipedia.org/wiki/Support_vector_machine")http://en.wikipedia.org/wiki/Support_vector_machine
 br/
 br/
-' An image which helps me visualize SVM at work is displayed below:
+' A scatter-plot which helps me visualize SVM at work is displayed below:
 br/
 br/
 img(src="/images/svm3d.png" alt="SVM_at_work")
@@ -170,6 +175,20 @@ br/
 br/
 ' The third attribute, x3, in each vector is constrained to the values 0 or 1.  
 ' If x3 is 1 it is displayed as a black circle else it appears as a white circle.  
+br/
+br/
+' This scatter-plot of three dimensional vectors, describes the general type of problem I want to solve:
+br/
+br/
+' If I know the values of x1 and x2, can I predict the value of x3?
+br/
+br/
+' The scatter-plot shows that when x1 is large and x2 is small, then x3 is a white circle and thus x3 is 0.
+br/
+br/
+' And, when x1 is small and x2 is large, then x3 is a black  circle and thus x3 is 1.
+br/
+br/
 ' SVM is designed to calculate the "best" way to measure the separation between the black circles and the white circles.
 br/
 br/
@@ -180,7 +199,7 @@ br/
 ' It's obvious from the diagram that the blue line does a better job than the green line.
 br/
 br/
-' Finally, the red line shows a optimal attempt by SVM to measure the separation between the black circles and the white circles.  
+' Finally, the red line shows an optimal attempt by SVM to measure the separation between the black circles and the white circles.  
 br/
 br/
 ' SVM practitioners refer to these lines as hyperplanes.  
