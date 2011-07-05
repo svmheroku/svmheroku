@@ -10,16 +10,17 @@ html
     /! layouts/column_help.html.slim
     table
       tr
-        td
+        td(valign="top")
+          hr/
+          h3
+            a(href="http://Bot4.us")Bot4.us
+          hr/
           | Some make their own luck.
           br/
           | We use a robot.
-        td
-          h3
-            a(href="http://Bot4.us")Bot4.us
-      tr
-        td(valign="top")
+          hr/
           = render :partial => "layouts/lhs_links"
-        td
+          hr/
+        td(valign="top")
           =yield
           = render :partial => "column_help"
