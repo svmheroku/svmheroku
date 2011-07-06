@@ -20,7 +20,7 @@ A: It looks at these:
   - Month of the year
 
 Q: Why does DanBot look at historical attributes?
-A: Via a simple OLAP query I discovered that, on Fridays,
+A: Via a simple OLAP query I discovered that, on Fridays afternoons,
 if I buy the SPY ETF one to two hours before market close
 and then sell it one to two hours before market close the next trading day
 (usually a Monday), I usually earn a gain.
@@ -32,9 +32,9 @@ Typically the SPY ETF does poorly May through August.
 
 It usually gains during spring and fall.
 
-My partial explanation for this market behavior is that many speculators avoid holding stocks over summer vacation.
+My partial explanation for this market behavior is that many speculators avoid holding stocks over summer vacation while they are away from the market.
 
-So, I now feed historical attributes to the DanBot.
+Therefore, I feed historical attributes to the DanBot.
 Maybe other clock or calendar based events affect prices.
 If so, the SVM algorithm has the power to spot them.
 
@@ -51,4 +51,16 @@ Also I would plot these two attributes in a scatter plot.
 I'd plot price-moving-average on the horizontal-axis to designate that it is an independent attribute.
 
 I'd plot one-day-gain on the vertical-axis to signal my hope that it depends on price-moving-average (and thus predictable and then I could get rich).
+
+Since Pearson's Correlation calculation can only work with sets of two-attribute-pairs, this technique fails if I want to study the dependence of gain on several types of price-moving-averages.
+
+SVM is an answer to this problem.
+
+It allows me to package up several numeric attributes into a "vector" and then help me study how one-day-gain depends on the vector.
+
+So, when DanBot wants to see a vector so it can predict the amount of one-day-gain for AAPL, I load up the vector with both chart indicators and historical attributes.
+
+When DanBot sees the vector, it compares it to many thousands of other vectors it has seen in the past where one-day-gain is known.  
+
+After this comparison is done by SVM, DanBot the resulting prediction from SVM and goes about the task of displaying the prediction on the website.
 
