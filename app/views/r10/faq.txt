@@ -62,5 +62,5 @@ So, when DanBot wants to see a vector so it can predict the amount of one-day-ga
 
 When DanBot sees the vector, it compares it to many thousands of other vectors it has seen in the past where one-day-gain is known.  
 
-After this comparison is done by SVM, DanBot the resulting prediction from SVM and goes about the task of displaying the prediction on the website.
+After this comparison is done by SVM, DanBot copies resulting prediction from SVM and goes about the task of displaying the prediction on the website.
 
