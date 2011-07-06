@@ -19,3 +19,5 @@ A: It looks at these:
   - Week of the month
   - Month of the year
 
+Q: Why does DanBot look at historical attributes?
+A: Via a simple OLAP query I discovered that, on Fridays, if I buy the SPY ETF one to two hours before market close and then sell it one to two hours before market close the next trading day (usually a Monday), I usually earn a gain.
