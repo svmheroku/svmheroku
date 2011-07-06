@@ -5,7 +5,7 @@ The DanBot uses 3 general ideas to give us a prediction:
 
 Q: Which chart indicators does DanBot use?
 A: Most of them.  One advantage that DanBot has over me is that it can easily "look" at 100 chart indicators.
-   When I look at a chart, it get confusing to me after it contains 5 indicators.
+   When I look at a chart, I get confused by more than 5 indicators.
    Here is a chart of IBM with many indicators:
 
 faq_ibm_chart.png
@@ -24,6 +24,31 @@ A: Via a simple OLAP query I discovered that, on Fridays,
 if I buy the SPY ETF one to two hours before market close
 and then sell it one to two hours before market close the next trading day
 (usually a Monday), I usually earn a gain.
-My explanation for this market behavior is that many investors do not want to hold stocks over the weekend.
+My explanation for this market behavior is that many speculators avoid holding stocks over the weekend.
 
+Another example of historical attributes as predictive indicators is month of the year.
+
+Typically the SPY ETF does poorly May through August.
+
+It usually gains during spring and fall.
+
+My partial explanation for this market behavior is that many speculators avoid holding stocks over summer vacation.
+
+So, I now feed historical attributes to the DanBot.
+Maybe other clock or calendar based events affect prices.
+If so, the SVM algorithm has the power to spot them.
+
+Q: How does the DanBot use the SVM algorithm?
+A: If you are familiar with statistics, I compare the SVM algorithm to Pearson's Correlation calculation.
+I use  Pearson's Correlation calculation to study a set of numeric-attribute-pairs which are best visualized as a scatter-plot.
+
+For example,
+If I suspect that the average-one-day gain of AAPL depends on the slope of the price-moving-average of AAPL,
+I would use Pearson's Correlation calculation study this possible dependency.
+
+Also I would plot these two attributes in a scatter plot.
+
+I'd plot price-moving-average on the horizontal-axis to designate that it is an independent attribute.
+
+I'd plot one-day-gain on the vertical-axis to signal my hope that it depends on price-moving-average (and thus predictable and then I could get rich).
 
