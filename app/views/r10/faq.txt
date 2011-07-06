@@ -1,0 +1,12 @@
+The DanBot uses 3 general ideas to give us a prediction:
+  - It looks at chart indicators
+  - It looks at historical attributes
+  - It uses an algorithm named SVM
+
+Q: Which chart indicators does DanBot use?
+A: Most of them.  One advantage that DanBot has over me is that it can easily "look" at 100 chart indicators.
+   When I look at a chart, it get confusing to me after it contains 5 indicators.
+show a messy chart here:
+- etrade
+- bigcharts
+- google
