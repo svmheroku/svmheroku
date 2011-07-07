@@ -1,3 +1,6 @@
+Q: Can the DanBot read charts?
+A: Yes it can if I feed it the numeric attributes which are used by charting software to create the charts.
+
 The DanBot uses 3 general ideas to give us a prediction:
   - It looks at chart indicators
   - It looks at historical attributes
@@ -6,9 +9,9 @@ The DanBot uses 3 general ideas to give us a prediction:
 Q: Which chart indicators does DanBot use?
 A: Most of them.  One advantage that DanBot has over me is that it can easily "look" at 100 chart indicators.
    When I look at a chart, I get confused by more than 5 indicators.
-   Here is a chart of IBM with many indicators:
+   Here is a chart of GOOG with many indicators:
 
-faq_ibm_chart.png
+goog_indicators.png
 
 Q: Which historical attributes does DanBot use?
 A: It looks at these:
@@ -20,7 +23,7 @@ A: It looks at these:
   - Month of the year
 
 Q: Why does DanBot look at historical attributes?
-A: Via a simple OLAP query I discovered that, on Fridays afternoons,
+A: Via a simple OLAP query I discovered that, on Friday afternoons,
 if I buy the SPY ETF one to two hours before market close
 and then sell it one to two hours before market close the next trading day
 (usually a Monday), I usually earn a gain.
@@ -50,7 +53,7 @@ Also I would plot these two attributes in a scatter plot.
 
 I'd plot price-moving-average on the horizontal-axis to designate that it is an independent attribute.
 
-I'd plot one-day-gain on the vertical-axis to signal my hope that it depends on price-moving-average (and thus predictable and then I could get rich).
+I'd plot one-day-gain on the vertical-axis to signal my hope that it depends on price-moving-average.
 
 Since Pearson's Correlation calculation can only work with sets of two-attribute-pairs, this technique fails if I want to study the dependence of gain on several types of price-moving-averages.
 
