@@ -77,6 +77,7 @@ br/
 
 br/
 br/
+hr/
 ' Q: Can the DanBot read charts?
 ' A: Yes it can if I feed it the numeric attributes which are used by charting software to create the charts.
 br/
@@ -88,6 +89,7 @@ ul
  li It uses an algorithm named SVM
 
 br/
+hr/
 ' Q: Which chart indicators does DanBot use?
 br/
 br/
@@ -95,10 +97,11 @@ br/
 '    When I look at a chart, I get confused by more than 5 indicators.
 '    Here is a chart of GOOG with many indicators:
 br/
-div(style="left:100px; top:100px; width:100px; height:100px; overflow:auto;")
+div(style="width:600px; height:960px; overflow:auto;")
   img(src="/images/goog_indicators.png" alt="goog_indicators.png")
 br/
 
+hr/
 ' Q: Which historical attributes does DanBot use?
 br/
 br/
@@ -113,6 +116,7 @@ ul
  li Month of the year
 
 br/
+hr/
 ' Q: Why does DanBot look at historical attributes?
 br/
 br/
@@ -122,7 +126,7 @@ br/
 ' (usually a Monday), I usually earn a gain.
 br/
 br/
-' My explanation for this market behavior is that many speculators avoid holding stocks over the weekend.
+' My conjecture for this market behavior is that many speculators avoid holding stocks over the weekend.
 br/
 br/
 
@@ -138,7 +142,7 @@ br/
 br/
 br/
 
-' My partial explanation for this market behavior is that many speculators avoid holding stocks over summer vacation while they are away from the market.
+' My partial conjecture for this market behavior is that many speculators avoid holding stocks over summer vacation while they are away from the market.
 br/
 br/
 
@@ -148,12 +152,14 @@ br/
 br/
 br/
 
+hr/
 ' Q: How does the DanBot use the SVM algorithm?
 br/
 br/
 ' A: If you are familiar with statistics, I compare the SVM algorithm to Pearson's Correlation calculation.
-' I use  Pearson's Correlation calculation to study a set of numeric-attribute-pairs which are best visualized as a scatter-plot.
+' I use  Pearson's Correlation calculation to study a set of numeric-attribute-pairs which are best visualized as a scatter-plot:
 br/
+img(src="/images/scatter_plot_demo.jpeg" alt="scatter_plot_demo.jpeg")
 br/
 
 ' For example,
