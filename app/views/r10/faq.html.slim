@@ -74,6 +74,128 @@ ul
 br/
 | If you believe that past behavior of a stock can be used to predict future behavior of a stock,
 | then the predictions issued by the DanBot may be of interest to you.
+
+br/
+br/
+' Q: Can the DanBot read charts?
+' A: Yes it can if I feed it the numeric attributes which are used by charting software to create the charts.
+br/
+
+' The DanBot uses 3 general ideas to give us a prediction:
+ul
+ li It looks at chart indicators
+ li It looks at historical attributes
+ li It uses an algorithm named SVM
+
+br/
+' Q: Which chart indicators does DanBot use?
+br/
+br/
+' A: Most of them.  One advantage that DanBot has over me is that it can easily "look" at 100 chart indicators.
+'    When I look at a chart, I get confused by more than 5 indicators.
+'    Here is a chart of GOOG with many indicators:
+br/
+div(style="left:100px; top:100px; width:100px; height:100px; overflow:auto;")
+  img(src="/images/goog_indicators.png" alt="goog_indicators.png")
+br/
+
+' Q: Which historical attributes does DanBot use?
+br/
+br/
+' A: It looks at these:
+br/
+ul
+ li Each day, the number of seconds since market open.
+ li Hour of the day
+ li Day of the week
+ li Day of the month
+ li Week of the month
+ li Month of the year
+
+br/
+' Q: Why does DanBot look at historical attributes?
+br/
+br/
+' A: Via a simple OLAP query I discovered that, on Friday afternoons,
+' if I buy the SPY ETF one to two hours before market close
+' and then sell it one to two hours before market close the next trading day
+' (usually a Monday), I usually earn a gain.
+br/
+br/
+' My explanation for this market behavior is that many speculators avoid holding stocks over the weekend.
+br/
+br/
+
+' Another example of historical attributes as predictive indicators is month of the year.
+br/
+br/
+
+' Typically the SPY ETF does poorly May through August.
+br/
+br/
+
+' It usually gains during spring and fall.
+br/
+br/
+
+' My partial explanation for this market behavior is that many speculators avoid holding stocks over summer vacation while they are away from the market.
+br/
+br/
+
+' Therefore, I feed historical attributes to the DanBot.
+' Maybe other clock or calendar based events affect prices.
+' If so, the SVM algorithm has the power to spot them.
+br/
+br/
+
+' Q: How does the DanBot use the SVM algorithm?
+br/
+br/
+' A: If you are familiar with statistics, I compare the SVM algorithm to Pearson's Correlation calculation.
+' I use  Pearson's Correlation calculation to study a set of numeric-attribute-pairs which are best visualized as a scatter-plot.
+br/
+br/
+
+' For example,
+' If I suspect that the average-one-day gain of AAPL depends on the slope of the price-moving-average of AAPL,
+' I would use Pearson's Correlation calculation study this possible dependency.
+
+br/
+br/
+' Also I would plot these two attributes in a scatter plot.
+
+br/
+br/
+' I'd plot price-moving-average on the horizontal-axis to designate that it is an independent attribute.
+
+br/
+br/
+' I'd plot one-day-gain on the vertical-axis to signal my hope that it depends on price-moving-average.
+
+br/
+br/
+' Since Pearson's Correlation calculation can only work with sets of two-attribute-pairs, this technique fails if I want to study the dependence of gain on several types of price-moving-averages.
+
+br/
+br/
+' SVM is an answer to this problem.
+
+br/
+br/
+' It allows me to package up several numeric attributes into a "vector" and then help me study how one-day-gain depends on the vector.
+
+br/
+br/
+' So, when DanBot wants to see a vector so it can predict the amount of one-day-gain for AAPL, I load up the vector with both chart indicators and historical attributes.
+
+br/
+br/
+' When DanBot sees the vector, it compares it to many thousands of other vectors it has seen in the past where one-day-gain is known.  
+
+br/
+br/
+' After this comparison is done by SVM, DanBot copies resulting prediction from SVM and goes about the task of displaying the prediction on the website.
+
 br/
 br/
 hr/
