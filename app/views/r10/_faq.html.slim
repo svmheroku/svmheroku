@@ -1,0 +1,207 @@
+/! views/r10/faq.html.slim
+a(href="/site_map")Site Map
+| > FAQ
+
+h4 Frequently Asked Questions (FAQ)
+
+| Q: How does Bot4.us work?
+br/
+br/
+| A: Bot4.us depends on predictive software I wrote.  I call this software the "DanBot".
+| The DanBot depends on an algorithm named SVM which is described in Wikipedia at the URL listed below:
+br/
+br/
+a(href="http://en.wikipedia.org/wiki/Support_vector_machine" target="w")http://en.wikipedia.org/wiki/Support_vector_machine
+br/
+br/
+| For many, the above article is a bit dense.
+| So I offer a simplistic scenario which may help you understand DanBot behavior.
+br/
+br/
+| First, we assume that past behavior of a stock price can predict future behavior of a stock price better than the act of flipping a coin.
+br/
+br/
+| If you do not believe this assumption, then you should ignore Bot4.us and study trading ideas which you think are valid.
+br/
+br/
+| Next, imagine I have a SimpleBot and I ask it, "If I buy one share of IBM in May and sell it a month later, should I expect a profit?".
+br/
+br/
+| SimpleBot then goes to Yahoo and downloads historical data for IBM from the URL listed below:
+br/
+br/
+a(href="http://finance.yahoo.com/q/hp?s=IBM+Historical+Prices" target="y")http://finance.yahoo.com/q/hp?s=IBM+Historical+Prices
+br/
+br/
+| SimpleBot loads the data into a database and then analyzes the data via SQL query:
+=render :partial => 'faq_ibm_sql'
+br/
+
+| SimpleBot sees that during the 20 years between 1990 and 2010 we had a total of 443 days when IBM was traded in May.
+br/
+br/
+| During those 443 days a share of IBM lost an average of $8.2158465 when that share was bought in May and sold 20 trading days later (due to weekends, 20 trading days is about a month).
+br/
+br/
+| SimpleBot issues a prediction,
+| "In the future, if you buy a share of IBM in May and sell it a month later you should expect a loss".
+br/
+br/
+| SimpleBot uses 3 types of information to make the prediction:
+ul
+  li The name of the stock (in this case IBM)
+  li A month name (in this case May)
+  li 443 days of price-gain history
+br/
+| The above SimpleBot-scenario gives you a general idea about how the DanBot works.
+br/
+br/
+| SimpleBot differs from DanBot in some significant ways:
+
+ul
+  li SimpleBot only gives a prediction
+  li DanBot assigns a confidence level to each prediction
+  li SimpleBot only looks at IBM
+  li DanBot looks at many stocks (and 11 Forex-pairs)
+  li SimpleBot looks at one duration of history (20 years)
+  li DanBot looks at several durations of history
+  li SimpleBot gives a prediction for a stock (IBM) held for 20 trading days
+  li DanBot gives predictions for a stock held for 24 hours (or over the weekend)
+  li DanBot gives a prediction for a Forex-pair held for 6 hours (or over the weekend)
+  li SimpleBot accepts 3 inputs: "IBM", "May", "443 days of price-gain history"
+  li DanBot accepts many inputs
+  li DanBot is introspective; it throttles back confidence levels when recent predictions trend towards less accuracy
+br/
+| If you believe that past behavior of a stock can be used to predict future behavior of a stock,
+| then the predictions issued by the DanBot may be of interest to you.
+
+br/
+br/
+hr/
+' Q: Can the DanBot read charts?
+' A: Yes it can if I feed it the numeric attributes which are used by charting software to create the charts.
+br/
+
+' The DanBot uses 3 general ideas to give us a prediction:
+ul
+ li It looks at chart indicators
+ li It looks at historical attributes
+ li It uses an algorithm named SVM
+
+br/
+hr/
+' Q: Which chart indicators does DanBot use?
+br/
+br/
+' A: Most of them.  One advantage that DanBot has over me is that it can easily "look" at 100 chart indicators.
+'    When I look at a chart, I get confused by more than 5 indicators.
+'    Here is a chart of GOOG with many indicators:
+br/
+div(style="width:600px; height:600px; overflow:auto;")
+  img(src="/images/goog_indicators.png" alt="goog_indicators.png")
+br/
+
+hr/
+' Q: Which historical attributes does DanBot use?
+br/
+br/
+' A: It looks at these:
+br/
+ul
+ li Each day, the number of seconds since market open.
+ li Hour of the day
+ li Day of the week
+ li Day of the month
+ li Week of the month
+ li Month of the year
+
+br/
+hr/
+' Q: Why does DanBot look at historical attributes?
+br/
+br/
+' A: Via a simple OLAP query I discovered that, on Friday afternoons,
+' if I buy the SPY ETF one to two hours before market close
+' and then sell it one to two hours before market close the next trading day
+' (usually a Monday), I usually earn a gain.
+br/
+br/
+' My conjecture for this market behavior is that many speculators avoid holding stocks over the weekend.
+br/
+br/
+
+' Another example of historical attributes as predictive indicators is month of the year.
+br/
+br/
+
+' Typically the SPY ETF does poorly May through August.
+br/
+br/
+
+' It usually gains during spring and fall.
+br/
+br/
+
+' My partial conjecture for this market behavior is that many speculators avoid holding stocks over summer vacation while they are away from the market.
+br/
+br/
+
+' Therefore, I feed historical attributes to the DanBot.
+' Maybe other clock or calendar based events affect prices.
+' If so, the SVM algorithm has the power to spot them.
+br/
+br/
+
+hr/
+' Q: How does the DanBot use the SVM algorithm?
+br/
+br/
+' A: If you are familiar with statistics, I compare the SVM algorithm to Pearson's Correlation calculation.
+' I use  Pearson's Correlation calculation to study a set of numeric-attribute-pairs which are best visualized as a scatter-plot:
+br/
+img(src="/images/scatter_plot_demo.jpeg" alt="scatter_plot_demo.jpeg")
+br/
+
+' For example,
+' If I suspect that the average-one-day gain of AAPL depends on the slope of the price-moving-average of AAPL,
+' I would use Pearson's Correlation calculation study this possible dependency.
+
+br/
+br/
+' Also I would plot these two attributes in a scatter plot.
+
+br/
+br/
+' I'd plot price-moving-average on the horizontal-axis to designate that it is an independent attribute.
+
+br/
+br/
+' I'd plot one-day-gain on the vertical-axis to signal my hope that it depends on price-moving-average.
+
+br/
+br/
+' Since Pearson's Correlation calculation can only work with sets of two-attribute-pairs, this technique fails if I want to study the dependence of gain on several types of price-moving-averages.
+
+br/
+br/
+' SVM is an answer to this problem.
+
+br/
+br/
+' It allows me to package up several numeric attributes into a "vector" and then help me study how one-day-gain depends on the vector.
+
+br/
+br/
+' So, when DanBot wants to see a vector so it can predict the amount of one-day-gain for AAPL, I load up the vector with both chart indicators and historical attributes.
+
+br/
+br/
+' When DanBot sees the vector, it compares it to many thousands of other vectors it has seen in the past where one-day-gain is known.  
+
+br/
+br/
+' After this comparison is done by SVM, DanBot copies resulting prediction from SVM and goes about the task of displaying the prediction on the website.
+
+br/
+br/
+hr/
