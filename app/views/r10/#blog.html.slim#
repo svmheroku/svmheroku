@@ -102,7 +102,13 @@ br/
 ' A side effect of this study might be that I start having dreams where I wake up and I am a Caltech undergrad again and all the final exams are way over my head.
 br/
 br/
-The image below shows that the Kalman Filter works better than smoothing for certain types of noisy signals.
+' The image below shows that the Kalman Filter works better than smoothing for certain types of noisy signals.
+br/
+br/
+' So it seems plausible to me that I could treat a time-series of prices as a noisy signal that can be filtered and then extrapolated.
+br/
+br/
+' If this 
 br/
 img(src="/images/kalman_filter_tank.png" alt="kalman_filter_tank.png")
 hr/
