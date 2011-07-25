@@ -14,6 +14,7 @@ Svm::Application.routes.draw do
   match 'tos' => 'r10#tos'
   match 'disclaimer' => 'r10#disclaimer'
   match 'books' => 'r10#books'
+  match 'a' => 'a1#index'
 
   # Sample of named route:
   #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
