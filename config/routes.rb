@@ -1,4 +1,6 @@
 Svm::Application.routes.draw do
+  get "us_stk_c/index"
+
   get "a1/index"
 
   # Sample of regular route:
