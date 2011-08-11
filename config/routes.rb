@@ -1,8 +1,4 @@
 Svm::Application.routes.draw do
-  get "us_stk_c/index"
-
-  get "a1/index"
-
   # Sample of regular route:
   #   match 'products/:id' => 'catalog#view'
   # Keep in mind you can assign values other than :controller and :action
