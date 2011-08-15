@@ -1,0 +1,11 @@
+
+h4 Blog
+
+hr/
+
+a(href="/blog#b2011_0815")
+  h4#b2011_0815 2011-08-15 A discussion about 1 hour gain
+
+' The DanBot is designed to issue a set of predictions every 5 minutes.
+' I assign a time series label to each prediction; the name of the label is "hour 0".
+' An hour later
