@@ -4,6 +4,7 @@
 :javascript
   $(document).ready(function() {
     $("div#help4_column_help").hide();
+    $("div#help4_data_description").hide();
     $("div#help4_currencypair").hide();
     $("div#help4_avgdanbotscore").hide();
     $("div#help4_sharperatio").hide();
@@ -14,6 +15,10 @@
     $("div#help4_minofnormalized5hrgains").hide();
     $("div#help4_maxofnormalized5hrgains").hide();
     $("div#help4_standarddeviationofnormalized5hrgains").hide();
+
+    $("a.data_description").click(function(event){
+      $("div#help4_data_description").dialog({ minWidth: 300 });
+    });
 
     $("a.currencypair").click(function(event){
       $("div#help4_currencypair").dialog({ minWidth: 300 });
@@ -71,6 +76,48 @@
   If you want to read the pop-up-help messages while you have JavaScript turned off,
   you will find them below this line.
   %hr/
+
+#help4_data_description(title="Column Help")
+  %br/
+  %a.currencypair(href="#") Currency-pair
+  %br/
+  %br/
+
+  %a.avgdanbotscore(href="#") Avg DanBot Score
+  %br/
+  %br/
+
+  %a.sharperatio(href="#") Sharpe Ratio
+  %br/
+  %br/
+
+  %a.avgofnormalized1hrgains(href="#") Avg of normalized 1hr gains
+  %br/
+  %br/
+
+  %a.avgofnormalized5hrgains(href="#") Avg of normalized 5hr gains
+  %br/
+  %br/
+
+  %a.countofpositions(href="#") Count of Positions
+  %br/
+  %br/
+
+  %a.sumofnormalized5hrgains(href="#") Sum of Normalized 5hr Gains
+  %br/
+  %br/
+
+  %a.minofnormalized5hrgains(href="#") Min of Normalized 5hr Gains
+  %br/
+  %br/
+
+  %a.maxofnormalized5hrgains(href="#") Max of Normalized 5hr Gains
+  %br/
+  %br/
+
+  %a.standarddeviationofnormalized5hrgains(href="#") Standard Deviation of Normalized 5hr Gains
+  %br/
+  %br/
 
 #help4_currencypair(title="Column Help")
   %h4 Currency-pair
