@@ -4,6 +4,7 @@
 :javascript
   $(document).ready(function() {
     $("div#help4_column_help").hide();
+    $("div#help4_data_description").hide();
     $("div#help4_currencypair").hide();
     $("div#help4_gmttimeathour0").hide();
     $("div#help4_danbotscoreathour0").hide();
@@ -12,6 +13,10 @@
     $("div#help4_priceafter1hour").hide();
     $("div#help4_normalized1hrgain").hide();
     $("div#help4_gmttimeathour6timetocloseposition").hide();
+
+    $("a.data_description").click(function(event){
+      $("div#help4_data_description").dialog({ minWidth: 300 });
+    });
 
     $("a.currencypair").click(function(event){
       $("div#help4_currencypair").dialog({ minWidth: 300 });
@@ -65,6 +70,40 @@
   If you want to read the pop-up-help messages while you have JavaScript turned off,
   you will find them below this line.
   %hr/
+
+#help4_data_description(title="Column Help")
+  %br/
+  %a.currencypair(href="#") Currency-Pair
+  %br/
+  %br/
+  %a.gmttimeathour0(href="#") GMT / UTC Time at Hour 0
+  %br/
+  %br/
+  %a.danbotscoreathour0(href="#") DanBot-Score
+  %br/
+  %br/
+  %a.scoretype(href="#") Score Type
+  %br/
+  %br/
+
+  %a.priceathour0(href="#") Price at Hour 0
+  %br/
+  %br/
+
+  %a.priceafter1hour(href="#") Price After 1 Hour
+  %br/
+  %br/
+
+  %a.normalized1hrgain(href="#") Normalized 1 Hour Gain
+  %br/
+  %br/
+
+  %a.gmttimeathour6timetocloseposition(href="#")
+    GMT Time at Hour 6
+    %br/
+    (Time to close position)
+  %br/
+  %br/
 
 #help4_currencypair(title="Column Help")
   %h4 Currency-Pair
