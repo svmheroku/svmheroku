@@ -4,6 +4,7 @@
 :javascript
   $(document).ready(function() {
     $("div#help4_column_help").hide();
+    $("div#help4_data_description").hide();
     $("div#help4_stockticker").hide();
     $("div#help4_avgtickerpriceathour0").hide();
     $("div#help4_avgdanbotscoreathour0").hide();
@@ -13,6 +14,10 @@
     $("div#help4_countofpositions").hide();
     $("div#help4_sumof24hrgains").hide();
     $("div#help4_standarddeviationof24hrgains").hide();
+
+    $("a.data_description").click(function(event){
+      $("div#help4_data_description").dialog({ minWidth: 300 });
+    });
 
     $("a.stockticker").click(function(event){
       $("div#help4_stockticker").dialog({ minWidth: 300 });
@@ -67,6 +72,36 @@
   If you want to read the pop-up-help messages while you have JavaScript turned off,
   you will find them below this line.
   %hr/
+
+#help4_data_description(title="Column Help")
+  %br/
+  %a.stockticker(href="#") Stock Ticker
+  %br/
+  %br/
+  %a.avgtickerpriceathour0(href="#") Avg Ticker Price at Hour 0
+  %br/
+  %br/
+  %a.avgdanbotscoreathour0(href="#") Avg DanBot Score at Hour 0
+  %br/
+  %br/
+  %a.sharperatio(href="#") Sharpe Ratio
+  %br/
+  %br/
+  %a.avg1hrgain(href="#") Average 1 Hour Gain
+  %br/
+  %br/
+  %a.avg24hrgain(href="#") Average 24 Hour Gain
+  %br/
+  %br/
+  %a.countofpositions(href="#") Count of Positions
+  %br/
+  %br/
+  %a.sumof24hrgains(href="#") Sum of 24hr Gains
+  %br/
+  %br/
+  %a.standarddeviationof24hrgains(href="#") Standard Deviation of 24hr Gains
+  %br/
+  %br/
 
 #help4_stockticker(title="Column Help")
   %h4 Stock Ticker
