@@ -1,3 +1,5 @@
+:css
+  pre.sql{background-color: #EEEEEE; color: #000088;}
 
 %h4 Blog
 
@@ -7,3 +9,14 @@
   %h4#b2011_0815 2011-09-20 A Search For Correlation
 
 I start this discussion with 
+
+%pre.sql
+  CREATE TABLE ystk_stage(
+  tkr VARCHAR2(11)
+  ,ydate DATE
+  ,opn NUMBER
+  ,mx NUMBER
+  ,mn NUMBER
+  ,clse0 NUMBER
+  ,vol NUMBER
+  ,clse NUMBER);
