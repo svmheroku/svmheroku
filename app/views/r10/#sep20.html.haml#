@@ -93,11 +93,14 @@ How to Download Oracle:
     Download Linux x86-64   File 1, File 2  (2GB)  See All 
     %br/
 
-  - Oracle installation documentation is ok for windows.
 
-  - Linux installation help:
-    - google: pythian install oracle 11g on ubuntu
-    - http://www.pythian.com/news/13291/installing-oracle-11gr2-enterprise-edition-on-ubuntu-10-04-lucid-lynx/
+Oracle installation documentation is ok for windows.
+
+  - 
+Linux installation help:
+google: pythian install oracle 11g on ubuntu
+
+http://www.pythian.com/news/13291/installing-oracle-11gr2-enterprise-edition-on-ubuntu-10-04-lucid-lynx/
 
 
 %pre.sql
