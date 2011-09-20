@@ -112,6 +112,25 @@ Installation:
       http://www.pythian.com/news/13291/installing-oracle-11gr2-enterprise-edition-on-ubuntu-10-04-lucid-lynx/
 %br/
 
+%h4
+  Pick a stock, SPY, download many years of CSV data for it
+
+The URL for SPY:
+%br/
+%br/
+%a(href="http://ichart.finance.yahoo.com/table.csv?s=SPY" target="y")
+  http://ichart.finance.yahoo.com/table.csv?s=SPY
+%br/
+%br/
+
+Linux shell command to download CSV for SPY:
+%br/
+%br/
+%pre.bash
+  wget --output-document=SPY.csv http://ichart.finance.yahoo.com/table.csv?s=SPY
+%br/
+%br/
+
 
 %pre.sql
   CREATE TABLE ystk_stage(
