@@ -123,11 +123,26 @@ The URL for SPY:
 %br/
 %br/
 
-Linux shell command to download CSV for SPY:
-%br/
+Demo of Linux shell command to download CSV for SPY:
 %br/
 %pre.bash
-  wget --output-document=SPY.csv http://ichart.finance.yahoo.com/table.csv?s=SPY
+  :preserve
+    oracle@z2:/pt/s/rluck/svmd/bp/cf$ 
+    oracle@z2:/pt/s/rluck/svmd/bp/cf$ wget --output-document=SPY.csv http://ichart.finance.yahoo.com/table.csv?s=SPY
+    --2011-09-20 23:05:46--  http://ichart.finance.yahoo.com/table.csv?s=SPY
+    Resolving ichart.finance.yahoo.com... 67.195.146.181
+    Connecting to ichart.finance.yahoo.com|67.195.146.181|:80... connected.
+    HTTP request sent, awaiting response... 200 OK
+    Length: unspecified [text/csv]
+    Saving to: `SPY.csv'
+    
+    [    <=>                                ] 246,771      308K/s   in 0.8s    
+    
+    2011-09-20 23:05:47 (308 KB/s) - `SPY.csv' saved [246771]
+    
+    oracle@z2:/pt/s/rluck/svmd/bp/cf$ 
+    oracle@z2:/pt/s/rluck/svmd/bp/cf$ 
+
 %br/
 %br/
 
