@@ -147,13 +147,105 @@ Demo of Linux-wget-shell-command to download CSV for SPY into SPY.csv:
 %br/
 
 
+Add a column to SPY.csv and then inspect it:
+%br/
+%pre.bash
+  :preserve
+    oracle@z2:/pt/s/rluck/svmd/bp/cf$ 
+    oracle@z2:/pt/s/rluck/svmd/bp/cf$ 
+    oracle@z2:/pt/s/rluck/svmd/bp/cf$ cat SPY.csv | awk  '{print "SPY,"$0}' | grep 0 > ystk_stage.csv
+    oracle@z2:/pt/s/rluck/svmd/bp/cf$ 
+    oracle@z2:/pt/s/rluck/svmd/bp/cf$ 
+    oracle@z2:/pt/s/rluck/svmd/bp/cf$ head ystk_stage.csv 
+    SPY,2011-09-19,119.53,120.93,118.72,120.31,239978600,120.31
+    SPY,2011-09-16,121.29,121.97,120.32,121.52,284528300,121.52
+    SPY,2011-09-15,120.65,121.47,119.40,121.43,326777200,120.81
+    SPY,2011-09-14,118.34,120.80,116.72,119.37,319389500,118.76
+    SPY,2011-09-13,117.05,118.18,116.22,117.74,272514700,117.13
+    SPY,2011-09-12,114.47,116.76,114.05,116.67,305793500,116.07
+    SPY,2011-09-09,117.68,119.06,115.28,115.92,380195100,115.32
+    SPY,2011-09-08,119.57,120.94,118.77,119.04,250568200,118.43
+    SPY,2011-09-07,118.76,120.34,118.36,120.29,209803200,119.67
+    SPY,2011-09-06,114.39,117.16,114.38,116.99,285130500,116.39
+    oracle@z2:/pt/s/rluck/svmd/bp/cf$ tail ystk_stage.csv
+    SPY,1993-02-11,44.78,45.13,44.78,44.94,19500,32.21
+    SPY,1993-02-10,44.66,44.75,44.53,44.72,379600,32.05
+    SPY,1993-02-09,44.81,44.81,44.56,44.66,122100,32.01
+    SPY,1993-02-08,44.97,45.13,44.91,44.97,596100,32.23
+    SPY,1993-02-05,44.97,45.06,44.72,44.97,492100,32.23
+    SPY,1993-02-04,44.97,45.09,44.47,45.00,531500,32.25
+    SPY,1993-02-03,44.41,44.84,44.38,44.81,529400,32.11
+    SPY,1993-02-02,44.22,44.38,44.13,44.34,201300,31.78
+    SPY,1993-02-01,43.97,44.25,43.97,44.25,480500,31.71
+    SPY,1993-01-29,43.97,43.97,43.75,43.94,1003200,31.49
+    oracle@z2:/pt/s/rluck/svmd/bp/cf$ 
+    oracle@z2:/pt/s/rluck/svmd/bp/cf$ 
+
+
+%h4
+  Load that data into an Oracle table using a utility called SQL-Loader.
+
+Create a table:
+%br/
+
+
 %pre.sql
-  CREATE TABLE ystk_stage(
-  tkr VARCHAR2(11)
-  ,ydate DATE
-  ,opn NUMBER
-  ,mx NUMBER
-  ,mn NUMBER
-  ,clse0 NUMBER
-  ,vol NUMBER
-  ,clse NUMBER);
+  :preserve
+    oracle@z2:/pt/s/rluck/svmd/bp$ 
+    oracle@z2:/pt/s/rluck/svmd/bp$ which sqt
+    /pt/s/bin/sqt
+    oracle@z2:/pt/s/rluck/svmd/bp$ cat /pt/s/bin/sqt
+    #!/bin/bash
+    
+    . /pt/s/oracle/.orcl
+    
+    sqlplus trade/t $@
+    oracle@z2:/pt/s/rluck/svmd/bp$ 
+    oracle@z2:/pt/s/rluck/svmd/bp$ 
+    oracle@z2:/pt/s/rluck/svmd/bp$ 
+    oracle@z2:/pt/s/rluck/svmd/bp$ sqt @cr_ystk_stage.sql 
+    
+    SQL*Plus: Release 11.2.0.1.0 Production on Tue Sep 20 23:23:09 2011
+    
+    Copyright (c) 1982, 2009, Oracle.  All rights reserved.
+    
+    
+    Connected to:
+    Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production
+    With the Partitioning, OLAP, Data Mining and Real Application Testing options
+    
+    23:23:09 SQL> ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD';
+    
+    Session altered.
+    
+    Elapsed: 00:00:00.01
+    23:23:09 SQL> 
+    23:23:09 SQL> --
+    23:23:09 SQL> -- cr_ystk_stage.sql
+    23:23:09 SQL> --
+    23:23:09 SQL> 
+    23:23:09 SQL> DROP TABLE ystk_stage;
+    
+    Table dropped.
+    
+    Elapsed: 00:00:00.22
+    23:23:09 SQL> 
+    23:23:09 SQL> 
+    23:23:09 SQL> CREATE TABLE ystk_stage(
+    23:23:09   2  tkr VARCHAR2(11)
+    23:23:09   3  ,ydate DATE
+    23:23:09   4  ,opn NUMBER
+    23:23:09   5  ,mx NUMBER
+    23:23:09   6  ,mn NUMBER
+    23:23:09   7  ,clse0 NUMBER
+    23:23:09   8  ,vol NUMBER
+    23:23:09   9  ,clse NUMBER)
+    23:23:09  10  /
+    
+    Table created.
+    
+    Elapsed: 00:00:00.06
+    23:23:09 SQL> exit
+    Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production
+    With the Partitioning, OLAP, Data Mining and Real Application Testing options
+    oracle@z2:/pt/s/rluck/svmd/bp$ 
