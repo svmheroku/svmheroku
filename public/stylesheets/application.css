@@ -1,4 +1,5 @@
 
+pre {font-weight:bold; font-family:"Courier New";}
 pre.sql{background-color: #EEEEEE; color: #000088;}
 pre.bash{background-color: #EEEEEE; color: #006600;}
 pre.rlanguage{background-color: #EEEEEE; color: #660000;}
