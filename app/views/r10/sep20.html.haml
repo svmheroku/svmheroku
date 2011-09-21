@@ -252,7 +252,7 @@ Create a table:
 %br/
 %br/
 
-Create a CTL file named ystk_stage.ctl (using editor):
+I Create a CTL file named ystk_stage.ctl (using editor):
 %br/
 
 %pre.sql
@@ -280,7 +280,7 @@ Create a CTL file named ystk_stage.ctl (using editor):
 %br/
 %br/
 
-Call SQL*Loader:
+I Call SQL*Loader:
 %br/
 
 %pre.bash
@@ -309,7 +309,7 @@ Call SQL*Loader:
 %br/
 
 
-Inspect the data:
+I Inspect the data:
 %br/
 
 %pre.sql
@@ -358,5 +358,103 @@ Inspect the data:
 
 %br/
 %br/
-Use R to plot the data.
+I Use SQL to create a CSV file for R to plot the data:
+%br/
+
+%pre.sql
+  :preserve
+    --
+    -- qry_spy_clse.sql
+    --
+    
+    SET PAGES 5555 COLSEP ","
+    
+    SELECT rownum rwnum,clse FROM
+    (
+        SELECT clse FROM ystk_stage ORDER BY ydate
+    );
+
+    SELECT TO_CHAR(ydate,'YYYY')year,clse price FROM ystk_stage ORDER BY ydate;
+
+%br/
+%br
+I Use R to plot the data:
+%br/
+
+%pre.rlanguage
+  :preserve
+    oracle@h2:/pt/s/rluck/svmd/bp/r$
+    oracle@h2:/pt/s/rluck/svmd/bp/r$
+    oracle@h2:/pt/s/rluck/svmd/bp/r$ R -f qry_spy_clse.r
+
+    
+    R version 2.11.1 (2010-05-31)
+    Copyright (C) 2010 The R Foundation for Statistical Computing
+    ISBN 3-900051-07-0
+    
+    R is free software and comes with ABSOLUTELY NO WARRANTY.
+    You are welcome to redistribute it under certain conditions.
+    Type 'license()' or 'licence()' for distribution details.
+    
+      Natural language support but running in an English locale
+    
+    R is a collaborative project with many contributors.
+    Type 'contributors()' for more information and
+    'citation()' on how to cite R or R packages in publications.
+    
+    Type 'demo()' for some demos, 'help()' for on-line help, or
+    'help.start()' for an HTML browser interface to help.
+    Type 'q()' to quit R.
+    
+    > # qry_spy_clse.r
+    > # I use this file to read prices of SPY from qry_spy_clse.csv
+    > # Then, I plot them.
+    > # I build qry_spy_clse.csv by hand from qry_spy_clse.sql output
+    > qry_spy_clse = read.csv("qry_spy_clse.csv")
+    > 
+    > # Define the .png file which will hold the output:
+    > png("qry_spy_clse.png",width = 800, height = 1800)
+    > 
+    > # Declare the output will be in 2 rows and 1 column:
+    > par(mfrow = c(2,1))
+    > 
+    > # Show the data as a sequence of about 5,000 prices ordered by day number after Jan 1993:
+    > day.vector = 1:length(qry_spy_clse$PRICE)
+    > plot(day.vector,qry_spy_clse$PRICE,type="h",col="#444444",xlim=c(0,5000))
+    > grid(col="black")
+    > 
+    > # Show the data as a boxplot grouped by year:
+    > boxplot (qry_spy_clse$PRICE ~ qry_spy_clse$YEAR , pch=20)
+    > grid(col="black")
+    > 
+    > dev.off()
+    null device 
+              1 
+    > 
+    > 
+
+%br/
+%br/
+Show the 2 plots of the SPY prices from Yahoo.
+%br/
+%br/
+The first plot is just a simple time series of 4,696 prices.
+%br/
+%br/
+The 2nd plot is a box plot of the data grouped by year.
+%br/
+%br/
+For each year the box plot shows min, max, median, quartiles and outliers.
+%br/
+%br/
+
+It's obvious that 2011 has the most outliers and they are negative.
+%br/
+%br/
+
+I would have expected 2008 to have the most outliers but I see none in the box plot.
+%br/
+%br/
+%img(src="/images/qry_spy_clse.png")
+%br/
 %br/
