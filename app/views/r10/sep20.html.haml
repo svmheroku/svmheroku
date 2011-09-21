@@ -1401,3 +1401,211 @@ I interpret this to mean that as moving average slope becomes more negative, the
 %br/
 
 %h4 Next I discuss the question, what besides mvg_avg_4wk_slope could we mix with gain1week in a scatter plot?
+
+Answer: More tkrs!
+%br/
+%br/
+I obtained data for more tkrs by duplicating my efforts to fill ystk_stage with prices from SPY.
+%br/
+%br/
+I then filled a table named ystk and wrote a SQL script to query it:
+%br/
+
+%pre.sql
+  :preserve
+    oracle@h2:/pt/s/rluck/svmd/bp$ sqt 
+    oracle@h2:/pt/s/rluck/svmd/bp$ sqt 
+    oracle@h2:/pt/s/rluck/svmd/bp$ sqt @corr_tkr
+    
+    SQL*Plus: Release 11.2.0.1.0 Production on Tue Sep 20 03:04:13 2011
+    
+    Copyright (c) 1982, 2009, Oracle.  All rights reserved.
+    
+    
+    Connected to:
+    Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - Production
+    With the Partitioning, OLAP, Data Mining and Real Application Testing options
+    
+    03:04:13 SQL> ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD';
+    
+    Session altered.
+    
+    Elapsed: 00:00:00.00
+    03:04:13 SQL> 
+    03:04:13 SQL> --
+    03:04:13 SQL> -- corr_tkr.sql
+    03:04:13 SQL> --
+    03:04:13 SQL> 
+    03:04:13 SQL> -- Helps me find tkrs where CORR-tween MAS and g1w is strong.
+    03:04:13 SQL> 
+    03:04:13 SQL> -- Get prices from past and future in same row as price1:
+    03:04:13 SQL> CREATE OR REPLACE VIEW batsigv20 AS
+    03:04:13   2  SELECT
+    03:04:13   3  tkr
+    03:04:13   4  ,ydate
+    03:04:13   5  ,LAG(clse,1,NULL)OVER(PARTITION BY tkr ORDER BY ydate) price0
+    03:04:13   6  ,clse price1
+    03:04:13   7  ,LEAD(clse,5,NULL)OVER(PARTITION BY tkr ORDER BY ydate) price2
+    03:04:13   8  FROM ystk
+    03:04:13   9  -- Prevent divide by 0 later on:
+    03:04:13  10  WHERE clse>0
+    03:04:13  11  /
+    
+    View created.
+    
+    Elapsed: 00:00:00.06
+    03:04:13 SQL> 
+    03:04:13 SQL> 
+    03:04:13 SQL> -- Get mvg avg for today and yesterday. Their Difference is slope.
+    03:04:13 SQL> CREATE OR REPLACE VIEW batsigv22 AS
+    03:04:13   2  SELECT
+    03:04:13   3  tkr
+    03:04:13   4  ,ydate
+    03:04:13   5  ,price1
+    03:04:13   6  ,price2
+    03:04:13   7  ,(price2 - price1)/price1 normlzed_gain1wk
+    03:04:13   8  ,AVG(price1)OVER(PARTITION BY tkr ORDER BY ydate ROWS BETWEEN 4*5 PRECEDING AND CURRENT ROW)
+    03:04:13   9  -AVG(price0)OVER(PARTITION BY tkr ORDER BY ydate ROWS BETWEEN 4*5 PRECEDING AND CURRENT ROW)mas1
+    03:04:13  10  FROM batsigv20
+    03:04:13  11  /
+    
+    View created.
+    
+    Elapsed: 00:00:00.03
+    03:04:13 SQL> 
+    03:04:13 SQL> 
+    03:04:13 SQL> 
+    03:04:13 SQL> CREATE OR REPLACE VIEW batsigv24 AS
+    03:04:13   2  SELECT
+    03:04:13   3  tkr
+    03:04:13   4  ,ydate
+    03:04:13   5  ,price1
+    03:04:13   6  ,price2
+    03:04:13   7  ,normlzed_gain1wk
+    03:04:13   8  ,mas1/price1 mvg_avg_slope
+    03:04:13   9  ,STDDEV(mas1/price1)OVER(PARTITION BY tkr)stddev4tkr
+    03:04:13  10  FROM batsigv22
+    03:04:13  11  /
+    
+    View created.
+    
+    Elapsed: 00:00:00.02
+    03:04:13 SQL> 
+    03:04:13 SQL> DROP TABLE batsig2;
+    
+    Table dropped.
+    
+    Elapsed: 00:00:00.09
+    03:04:13 SQL> CREATE TABLE batsig2 COMPRESS AS
+    03:04:13   2  SELECT
+    03:04:13   3  tkr
+    03:04:13   4  ,ydate
+    03:04:13   5  ,price1
+    03:04:13   6  ,price2
+    03:04:13   7  ,normlzed_gain1wk
+    03:04:13   8  ,mvg_avg_slope
+    03:04:13   9  ,stddev4tkr
+    03:04:13  10  FROM batsigv24
+    03:04:13  11  /
+    
+    Table created.
+    
+    Elapsed: 00:00:24.07
+    03:04:37 SQL> 
+    03:04:37 SQL> SELECT
+    03:04:37   2  tkr
+    03:04:37   3  ,CASE WHEN SIGN(mvg_avg_slope)>0 THEN'slope_up'ELSE'slope_down'END up_down
+    03:04:37   4  ,CORR(mvg_avg_slope,normlzed_gain1wk)corr_mas_g1w
+    03:04:37   5  ,COUNT(mvg_avg_slope)         occurrences
+    03:04:37   6  ,MIN(ydate)                   min_date
+    03:04:37   7  ,MAX(ydate)                   max_date
+    03:04:37   8  ,AVG(normlzed_gain1wk)        avg_n_gain
+    03:04:37   9  FROM batsig2
+    03:04:37  10  WHERE ABS(mvg_avg_slope)> 2*stddev4tkr
+    03:04:37  11  GROUP BY SIGN(mvg_avg_slope),tkr
+    03:04:37  12  HAVING COUNT(mvg_avg_slope)>10
+    03:04:37  13  -- I want negative correlation:
+    03:04:37  14  AND CORR(mvg_avg_slope,normlzed_gain1wk) < -0.3
+    03:04:37  15  ORDER BY SIGN(mvg_avg_slope),CORR(mvg_avg_slope,normlzed_gain1wk)
+    03:04:37  16  /
+    
+    TKR       UP_DOWN    CORR_MAS_G1W OCCURRENCES MIN_DATE   MAX_DATE   AVG_N_GAIN
+    --------- ---------- ------------ ----------- ---------- ---------- ----------
+    LVS       slope_down   -.77302025          59 2008-10-03 2009-03-12 -.00643721
+    IAG       slope_down   -.57996787          37 2004-04-20 2009-12-31 .026073603
+    MVG       slope_down   -.55026234          48 2007-08-20 2011-05-26 .053888808
+    EGO       slope_down   -.54875409          35 2004-05-03 2008-11-06 .061388713
+    GOOG      slope_down     -.532438          51 2006-02-07 2011-08-22 .012257707
+    AXU       slope_down   -.52112439          46 2006-09-11 2008-12-11 .018281875
+    GDX       slope_down   -.49894063          28 2006-05-24 2008-11-12 .027681865
+    BIDU      slope_down   -.48231978          21 2010-05-12 2010-06-10 -.00013375
+    WYNN      slope_down   -.44769247          64 2005-05-03 2009-10-28 .003877144
+    SWC       slope_down   -.43825229         188 1998-08-31 2011-08-08 .039312815
+    IOC       slope_down   -.43813153          47 2005-04-15 2010-05-24  .00539572
+    V         slope_down   -.43481517          35 2008-09-29 2010-06-02 .004035193
+    MET       slope_down   -.43038829          57 2002-07-23 2011-08-26 .104785469
+    XLU       slope_down   -.42859917         108 2000-02-22 2011-08-08  -.0029094
+    C         slope_down   -.42316725         260 1987-03-13 2011-08-24 .029379151
+    PRU       slope_down   -.41812509          58 2008-02-11 2011-08-08 .041262988
+    PM        slope_down   -.41472197          47 2008-09-29 2010-05-25 -.00515463
+    DTV       slope_down   -.38713246          47 2003-12-24 2011-08-30 .028532859
+    GFI       slope_down   -.38076471         165 1992-10-05 2008-11-12 .043204377
+    FSLR      slope_down   -.37918789          40 2008-01-16 2011-08-22 .039759179
+    CELG      slope_down   -.37748948         137 1991-12-12 2006-03-27 .012393269
+    GS        slope_down    -.3749512          90 2000-04-14 2011-08-24 .017092532
+    CEO       slope_down   -.36387817          50 2004-05-10 2011-08-22   .0063181
+    BUCY      slope_down   -.36379256          67 2004-07-27 2010-05-24 -.00601248
+    SLW       slope_down   -.36000276          36 2006-05-18 2008-11-20 -.02423249
+    TM        slope_down   -.35810336         119 1993-04-14 2011-08-30 .025914938
+    AUY       slope_down    -.3408188          57 2004-01-14 2008-11-12  .00410878
+    PALL      slope_down   -.33766057          16 2010-01-22 2011-03-17 .028838285
+    SLV       slope_down   -.33150545          21 2008-07-24 2008-08-21 -.05697899
+    RIG       slope_down   -.32793158         169 1993-12-14 2010-06-16 .011860647
+    AU        slope_down   -.32093453         120 1998-08-13 2009-04-20 .038261332
+    MOS       slope_down   -.30870009          31 2008-08-11 2008-12-04 -.01070864
+    VECO      slope_down   -.30859293         182 1994-12-08 2010-08-24 .015516011
+    SINA      slope_up     -.85996624          12 2000-05-16 2003-07-29 -.13897002
+    AXP       slope_up     -.58643497          24 2009-04-03 2009-08-07 .081219741
+    DNDN      slope_up     -.56742989          38 2007-03-30 2009-05-11 .036226391
+    MT        slope_up      -.5026734          31 1999-04-29 2004-08-11 -.02947996
+    CREE      slope_up     -.48175097          15 1993-02-10 2000-02-16 .022740543
+    ARG       slope_up     -.44331489          12 1987-03-03 2010-03-08 -.05655323
+    UA        slope_up     -.44302496          11 2005-11-21 2009-05-01 -.04501422
+    CMG       slope_up     -.42715384          22 2006-01-30 2009-04-22 .012556741
+    EGO       slope_up     -.41285315          17 2005-11-21 2009-01-09 .013781502
+    STT       slope_up     -.41246182          15 2000-04-03 2009-04-21 -.02448819
+    BBT       slope_up     -.39829984          39 1990-03-27 2009-08-24 -.02747301
+    GLD       slope_up     -.39238453          50 2005-12-08 2011-09-06 -.01337806
+    AMGN      slope_up     -.36264683          15 1986-04-10 2000-01-19 -.03259565
+    QCOM      slope_up     -.36015301          12 1992-01-02 1999-04-26 .025506011
+    TKR       slope_up     -.32943567          35 1998-11-04 2010-08-04 .008300022
+    AMZN      slope_up     -.32781593          25 1997-09-19 2001-05-08 -.02851557
+    VLO       slope_up     -.32236941          28 1984-08-27 2009-01-06 -.02598296
+    HMY       slope_up     -.31562862          62 1998-02-02 2008-12-31  -.0138532
+    IYR       slope_up     -.31085718          11 2008-12-19 2009-08-10 -.01799323
+    CAT       slope_up     -.30785237          39 1974-10-31 2009-08-14 -.00702876
+    WDC       slope_up     -.30168735          29 1987-01-05 2002-08-22 -.03050444
+    
+    54 rows selected.
+    
+    Elapsed: 00:00:01.51
+    03:04:39 SQL> 
+    03:04:39 SQL> exit
+    Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - Production
+    With the Partitioning, OLAP, Data Mining and Real Application Testing options
+    oracle@h2:/pt/s/rluck/svmd/bp$ 
+%br/
+%br/
+The above query gives me a list of tkrs which exhibit negative correlation between moving average slope and 1 week gain.
+%br/
+%br/
+For example I see that GOOG, the tkr for Google, has a correlation of -0.532438
+%br/
+%br/
+Between 2006-02-07 and 2011-08-22 I had 51 opportunities to trade on this signal.
+%br/
+%br/
+The average one week gain of these 51 opportunities was 1.2%
+%br/
+%br/
+
