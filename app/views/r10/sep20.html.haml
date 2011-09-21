@@ -12,7 +12,7 @@ On September 13, 2001 I gave a presentation at the Bay Area Trading Systems Inte
 %br/
 %br/
 
-My notes from that presentation form the basis for this blog entry.
+An enhanced version of that presentation is displayed below.
 
 %h4 Summary
 
@@ -188,7 +188,6 @@ Add a column to SPY.csv and then inspect it:
 Create a table:
 %br/
 
-
 %pre.sql
   :preserve
     oracle@z2:/pt/s/rluck/svmd/bp$ 
@@ -249,3 +248,115 @@ Create a table:
     Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production
     With the Partitioning, OLAP, Data Mining and Real Application Testing options
     oracle@z2:/pt/s/rluck/svmd/bp$ 
+
+%br/
+%br/
+
+Create a CTL file named ystk_stage.ctl (using editor):
+%br/
+
+%pre.sql
+  :preserve
+    oracle@z2:/pt/s/rluck/svmd/bp$ 
+    oracle@z2:/pt/s/rluck/svmd/bp$ cat ystk_stage.ctl 
+    LOAD DATA
+    INFILE 'ystk_stage.csv'
+    replace INTO TABLE ystk_stage
+    FIELDS TERMINATED BY ','
+    TRAILING NULLCOLS
+    (
+    tkr    CHAR             NULLIF (tkr=BLANKS)
+    ,ydate DATE "YYYY-MM-DD" NULLIF (ydate=BLANKS)
+    ,opn   DECIMAL EXTERNAL NULLIF (opn=BLANKS)
+    ,mx    DECIMAL EXTERNAL NULLIF (mx=BLANKS)
+    ,mn    DECIMAL EXTERNAL NULLIF (mn=BLANKS)
+    ,clse0 DECIMAL EXTERNAL NULLIF (clse0=BLANKS)
+    ,vol   DECIMAL EXTERNAL NULLIF (vol=BLANKS)
+    ,clse  DECIMAL EXTERNAL NULLIF (clse=BLANKS)
+    )
+    oracle@z2:/pt/s/rluck/svmd/bp$ 
+    oracle@z2:/pt/s/rluck/svmd/bp$ 
+
+%br/
+%br/
+
+Call SQL*Loader:
+%br/
+
+%pre.bash
+  :preserve
+    oracle@z2:/pt/s/rluck/svmd/bp$ 
+    oracle@z2:/pt/s/rluck/svmd/bp$ 
+    oracle@z2:/pt/s/rluck/svmd/bp$ sqlldr trade/t bindsize=20971520 readsize=20971520 rows=123456 control=ystk_stage.ctl
+    
+    SQL*Loader: Release 11.2.0.1.0 - Production on Wed Sep 21 07:15:26 2011
+    
+    Copyright (c) 1982, 2009, Oracle and/or its affiliates.  All rights reserved.
+    
+    Commit point reached - logical record count 4696
+    oracle@z2:/pt/s/rluck/svmd/bp$ 
+    oracle@z2:/pt/s/rluck/svmd/bp$ 
+    oracle@z2:/pt/s/rluck/svmd/bp$ grep loaded ystk_stage.log
+    Table YSTK_STAGE, loaded from every logical record.
+      4696 Rows successfully loaded.
+      0 Rows not loaded due to data errors.
+      0 Rows not loaded because all WHEN clauses were failed.
+      0 Rows not loaded because all fields were null.
+    oracle@z2:/pt/s/rluck/svmd/bp$ 
+    oracle@z2:/pt/s/rluck/svmd/bp$ 
+
+%br/
+%br/
+
+
+Inspect the data:
+%br/
+
+%pre.sql
+  :preserve
+    oracle@z2:/pt/s/rluck/svmd/bp$ 
+    oracle@z2:/pt/s/rluck/svmd/bp$ sqt
+    
+    SQL*Plus: Release 11.2.0.1.0 Production on Wed Sep 21 07:17:29 2011
+    
+    Copyright (c) 1982, 2009, Oracle.  All rights reserved.
+    
+    
+    Connected to:
+    Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production
+    With the Partitioning, OLAP, Data Mining and Real Application Testing options
+    
+    07:17:29 SQL> ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD';
+    
+    Session altered.
+    
+    Elapsed: 00:00:00.00
+    07:17:29 SQL> 
+    07:17:29 SQL> SELECT tkr,ydate,clse FROM ystk_stage WHERE ydate > sysdate - 9 ORDER BY ydate;
+    
+    TKR	    YDATE	     CLSE
+    ----------- ---------- ----------
+    SPY	    2011-09-13	   117.13
+    SPY	    2011-09-14	   118.76
+    SPY	    2011-09-15	   120.81
+    SPY	    2011-09-16	   121.52
+    SPY	    2011-09-19	   120.31
+    
+    Elapsed: 00:00:00.00
+    07:17:42 SQL> SELECT tkr,MIN(ydate),MAX(ydate),MIN(clse),MAX(clse)FROM ystk_stage GROUP BY tkr;
+    
+    TKR	    MIN(YDATE) MAX(YDATE)  MIN(CLSE)  MAX(CLSE)
+    ----------- ---------- ---------- ---------- ----------
+    SPY	    1993-01-29 2011-09-19      31.11	  144.2
+    
+    Elapsed: 00:00:00.01
+    07:18:01 SQL> 
+    07:18:02 SQL> exit
+    Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production
+    With the Partitioning, OLAP, Data Mining and Real Application Testing options
+    oracle@z2:/pt/s/rluck/svmd/bp$ 
+
+%br/
+%br/
+Use R to plot the data.
+%br/
