@@ -578,7 +578,7 @@ I would have expected 2008 to have the most outliers but I see none in the box p
     oracle@z2:/pt/s/rluck/svmd/bp$ 
 
 %br/
-%h4 Next I demonstrate how to visualize gain1week as a distribution (hint: it will look like a bell curve). 
+%h4 Next I demonstrate how to visualize gain1week as a distribution
 
 %pre.sql
   :preserve
@@ -827,8 +827,456 @@ I show two standard deviations from the mean as two blue vertical lines.
 The blue vertical line in the middle is at the mean.
 %br/
 %br/
-
-
-%h4 Then I demonstrate how to visualize mvg_avg_4wk_slope as a distribution (hint: it will look like a bell curve).
+Before I started this exercise I assumed that the histogram of gains would resemble a bell curve.
 %br/
 %br/
+I was wrong; instead it looks like a narrow triangle with a long tail on the left.
+%br/
+%br/
+
+
+%h4 Next, I demonstrate how to visualize mvg_avg_4wk_slope as a distribution
+
+As before I collect slope frequencies using a SQL script.
+%br/
+%br/
+
+%pre.sql
+  :preserve
+    oracle@z2:/pt/s/rluck/svmd/bp$ 
+    oracle@z2:/pt/s/rluck/svmd/bp$ sqt @ma_gdist
+    
+    SQL*Plus: Release 11.2.0.1.0 Production on Wed Sep 21 09:12:18 2011
+    
+    Copyright (c) 1982, 2009, Oracle.  All rights reserved.
+    
+    
+    Connected to:
+    Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production
+    With the Partitioning, OLAP, Data Mining and Real Application Testing options
+    
+    09:12:18 SQL> ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD';
+    
+    Session altered.
+    
+    Elapsed: 00:00:00.01
+    09:12:18 SQL> 
+    09:12:18 SQL> --
+    09:12:19 SQL> -- ma_gdist.sql
+    09:12:19 SQL> --
+    09:12:19 SQL> 
+    09:12:19 SQL> -- Demonstrate how to visualize gain1week     as a distribution.
+    09:12:19 SQL> -- Demonstrate how to visualize mvg_avg_slope as a distribution.
+    09:12:19 SQL> 
+    09:12:19 SQL> -- Model a Normal Distribution:
+    09:12:19 SQL> 
+    09:12:19 SQL> SELECT
+    09:12:19   2  -- MIN(gain1week)
+    09:12:19   3  -- ,AVG(gain1week)
+    09:12:19   4  -- ,MAX(gain1week)
+    09:12:19   5  -- ,STDDEV(gain1week)
+    09:12:19   6  -- ,MIN(mvg_avg_slope)
+    09:12:19   7  MIN(mvg_avg_slope)
+    09:12:19   8  ,AVG(mvg_avg_slope)
+    09:12:19   9  ,MAX(mvg_avg_slope)
+    09:12:19  10  ,STDDEV(mvg_avg_slope)
+    09:12:19  11  FROM batsig
+    09:12:19  12  /
+    
+    MIN(MVG_AVG_SLOPE) AVG(MVG_AVG_SLOPE) MAX(MVG_AVG_SLOPE) STDDEV(MVG_AVG_SLOPE)
+    ------------------ ------------------ ------------------ ---------------------
+             -.0209343         .000223191         .009013965            .002369312
+    
+    Elapsed: 00:00:00.04
+    09:12:19 SQL> 
+    09:12:19 SQL> CREATE OR REPLACE VIEW batsigv10 AS
+    09:12:19   2  SELECT
+    09:12:19   3  tkr
+    09:12:19   4  ,ydate
+    09:12:19   5  ,price1
+    09:12:19   6  ,gain1week
+    09:12:19   7  ,ROUND(gain1week,1)g1wr1
+    09:12:19   8  ,ROUND(gain1week,2)g1wr2
+    09:12:19   9  ,mvg_avg_slope
+    09:12:19  10  ,ROUND(mvg_avg_slope,1)masr1
+    09:12:19  11  ,ROUND(mvg_avg_slope,2)masr2
+    09:12:19  12  ,ROUND(mvg_avg_slope,3)masr3
+    09:12:19  13  FROM batsig
+    09:12:19  14  /
+    
+    View created.
+    
+    Elapsed: 00:00:00.14
+    09:12:19 SQL> 
+    09:12:19 SQL> -- Visualize a histogram:
+    09:12:19 SQL> 
+    09:12:19 SQL> SELECT
+    09:12:19   2  masr3
+    09:12:19   3  ,COUNT(masr3) gcount
+    09:12:19   4  FROM batsigv10
+    09:12:19   5  GROUP BY masr3
+    09:12:19   6  ORDER BY masr3
+    09:12:19   7  /
+    
+         MASR3     GCOUNT
+    ---------- ----------
+         -.021          1
+          -.02          1
+         -.018          1
+         -.017          2
+         -.015          1
+         -.014          1
+         -.013          2
+         -.012          6
+         -.011          3
+          -.01          7
+         -.009         13
+         -.008         12
+         -.007         19
+         -.006         40
+         -.005         57
+         -.004        103
+         -.003        206
+         -.002        366
+         -.001        546
+             0        881
+          .001       1121
+          .002        792
+          .003        331
+          .004        103
+          .005         45
+          .006         18
+          .007          7
+          .008          3
+          .009          2
+    
+    29 rows selected.
+    
+    Elapsed: 00:00:00.02
+    09:12:19 SQL> 
+    09:12:19 SQL> 
+    09:12:19 SQL> exit
+    Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production
+    With the Partitioning, OLAP, Data Mining and Real Application Testing options
+    oracle@z2:/pt/s/rluck/svmd/bp$ 
+%br/
+%br/
+As before, I see a long tail left of the mean.
+%br/
+%br/
+Unlike the gain frequencies, it seems that the mean is further to the right; it is more positive.
+%br/
+%br/
+I used R to plot the data:
+%br/
+%br/
+%pre.rlanguage
+  :preserve
+    # masr3.r
+    # I use this file to read masr3.csv which was created from ma_gdist.sql
+    # The data is a frequency count which I intend to display as a histogram.
+    
+    # I build masr3.csv by hand from preso.txt
+    masr3 = read.csv("masr3.csv")
+    
+    # Define the .png file which will hold the output:
+    png("masr3.png",width = 800, height = 800)
+    
+    # Plot the R and L tails:
+    plot(masr3$MASR3,masr3$GCOUNT,type="h",lwd=4,col="black",xlim=c(-0.025,0.025),
+      xlab="Rounded Normalized Moving Average Slopes",ylab="Frequency Count")
+    grid(col="black")
+    
+    # I pulled these values from my Oracle rpt:
+    masr3min = -0.0209
+    masr3max = 0.00901
+    masr3sd = 0.00237
+    masr3mean = 0.000223
+    
+    # Show Mean and 2 stddevs from mean as vertical lines:
+    abline(v = masr3mean, col="blue",lwd=2)
+    abline(v = masr3mean-2*masr3sd, col="blue",lwd=2)
+    abline(v = masr3mean+2*masr3sd, col="blue",lwd=2)
+    
+    
+    # Now overlay another plot:
+    # http://pj.freefaculty.org/R/Rtips.html#5.11
+    par(new = TRUE) 
+    x=seq(masr3min,masr3max,length=200)
+    y=dnorm(x,mean=masr3mean,sd=masr3sd)
+    plot(x,y,type="l",lwd=1,col="blue",xaxt="n", yaxt="n",xlab=" ",ylab=" ",xlim=c(-0.025,0.025))
+    
+    dev.off()
+%br/
+%br/
+%img(src="/images/masr3.png")
+%br/
+%br/
+This histogram  resembles the histogram of gains.
+It looks like a narrow triangle with a long tail on the left.
+%br/
+%br/
+
+%h4
+  Next I answer the question, 
+  when mvg_avg_4wk_slope, was more than two standard deviations from the mean, 
+  how did gain1week usually react? 
+
+SQL is well suited to answer this question as demonstrated by the script below:
+
+%br/
+%br/
+
+%pre.sql
+  :preserve
+
+    oracle@z2:/pt/s/rluck/svmd/bp$ 
+    oracle@z2:/pt/s/rluck/svmd/bp$ sqt @corr_spy
+    
+    SQL*Plus: Release 11.2.0.1.0 Production on Wed Sep 21 09:28:47 2011
+    
+    Copyright (c) 1982, 2009, Oracle.  All rights reserved.
+    
+    
+    Connected to:
+    Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production
+    With the Partitioning, OLAP, Data Mining and Real Application Testing options
+    
+    09:28:47 SQL> ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD';
+    
+    Session altered.
+    
+    Elapsed: 00:00:00.00
+    09:28:47 SQL> 
+    09:28:47 SQL> --
+    09:28:47 SQL> -- corr_spy.sql
+    09:28:47 SQL> --
+    09:28:47 SQL> 
+    09:28:47 SQL> -- Start by showing a count of all the trading days:
+    09:28:47 SQL> SELECT COUNT(ydate)FROM batsig;
+    
+    COUNT(YDATE)
+    ------------
+            4690
+    
+    Elapsed: 00:00:00.01
+    09:28:47 SQL> 
+    09:28:47 SQL> -- Now go on a quest for correlation
+    09:28:47 SQL> -- between extreme 4 wk moving avg slopes and resulting 1 week gain:
+    09:28:47 SQL> 
+    09:28:47 SQL> SELECT
+    09:28:47   2  CASE WHEN SIGN(mvg_avg_slope)>0 THEN'slope_up'ELSE'slope_down'END up_down
+    09:28:47   3  ,CORR(mvg_avg_slope,gain1week)corr_mas_g1w
+    09:28:47   4  ,COUNT(mvg_avg_slope)         occurrences
+    09:28:47   5  ,AVG(gain1week)               avg_gain1week
+    09:28:47   6  ,SUM(gain1week)               sum_gain1week
+    09:28:47   7  FROM batsig
+    09:28:47   8  WHERE ABS(mvg_avg_slope)>= 0.004
+    09:28:47   9  GROUP BY SIGN(mvg_avg_slope)
+    09:28:47  10  /
+    
+    UP_DOWN    CORR_MAS_G1W OCCURRENCES AVG_GAIN1WEEK SUM_GAIN1WEEK
+    ---------- ------------ ----------- ------------- -------------
+    slope_up     .064292553         111    -.00269497    -.29914135
+    slope_down   -.28823126         211    .006379264     1.3460247
+    
+    Elapsed: 00:00:00.03
+    09:28:47 SQL> 
+    09:28:47 SQL> SELECT
+    09:28:47   2  CASE WHEN SIGN(mvg_avg_slope)>0 THEN'slope_up'ELSE'slope_down'END up_down
+    09:28:47   3  ,CORR(mvg_avg_slope,gain1week)corr_mas_g1w
+    09:28:47   4  ,COUNT(mvg_avg_slope)         occurrences
+    09:28:47   5  ,AVG(gain1week)               avg_gain1week
+    09:28:47   6  ,SUM(gain1week)               sum_gain1week
+    09:28:47   7  FROM batsig
+    09:28:47   8  WHERE ABS(mvg_avg_slope)>= 0.0045
+    09:28:47   9  GROUP BY SIGN(mvg_avg_slope)
+    09:28:47  10  /
+    
+    UP_DOWN    CORR_MAS_G1W OCCURRENCES AVG_GAIN1WEEK SUM_GAIN1WEEK
+    ---------- ------------ ----------- ------------- -------------
+    slope_up     .094249655          75    -.00220989    -.16574172
+    slope_down   -.27570685         166    .010005402    1.66089671
+    
+    Elapsed: 00:00:00.00
+    09:28:47 SQL> 
+    09:28:47 SQL> SELECT
+    09:28:47   2  CASE WHEN SIGN(mvg_avg_slope)>0 THEN'slope_up'ELSE'slope_down'END up_down
+    09:28:47   3  ,CORR(mvg_avg_slope,gain1week)corr_mas_g1w
+    09:28:47   4  ,COUNT(mvg_avg_slope)         occurrences
+    09:28:47   5  ,AVG(gain1week)               avg_gain1week
+    09:28:47   6  ,SUM(gain1week)               sum_gain1week
+    09:28:47   7  FROM batsig
+    09:28:47   8  WHERE ABS(mvg_avg_slope)>= 0.005
+    09:28:47   9  GROUP BY SIGN(mvg_avg_slope)
+    09:28:47  10  /
+    
+    UP_DOWN    CORR_MAS_G1W OCCURRENCES AVG_GAIN1WEEK SUM_GAIN1WEEK
+    ---------- ------------ ----------- ------------- -------------
+    slope_up     .201186317          45    -.00283419    -.12753875
+    slope_down   -.26423013         134    .013981069    1.87346323
+    
+    Elapsed: 00:00:00.02
+    09:28:47 SQL> 
+    09:28:47 SQL> SELECT
+    09:28:47   2  tkr
+    09:28:47   3  ,ydate
+    09:28:47   4  ,price1
+    09:28:47   5  ,gain1week normalized_g1wk
+    09:28:47   6  FROM batsig
+    09:28:47   7  WHERE mvg_avg_slope <= -0.005
+    09:28:47   8  ORDER by ydate
+    09:28:47   9  /
+    
+    TKR         YDATE          PRICE1 NORMALIZED_G1WK
+    ----------- ---------- ---------- ---------------
+    SPY         1998-08-14      85.37      .022958885
+    SPY         1998-08-31      77.23      .072899132
+    SPY         1998-09-01      80.49      .004472605
+    SPY         1998-09-04      78.63      .058247488
+    SPY         2000-10-12     109.72      .046481954
+    SPY         2001-03-01     102.97      .020200058
+    SPY         2001-03-02     102.15       -.0020558
+    SPY         2001-03-05     103.08      -.05335662
+    SPY         2001-03-12      97.58      -.00348432
+    SPY         2001-03-14      97.22      -.04320099
+    SPY         2001-03-15      97.25      -.05316195
+    SPY         2001-03-16       95.3        -.004617
+    SPY         2001-03-19      97.24      -.01203209
+    SPY         2001-03-20      94.63      .035929409
+    SPY         2001-03-21      93.02      .024725865
+    SPY         2001-03-22      92.08      .039205039
+    SPY         2001-04-03      91.47      .056739915
+    SPY         2001-04-04      91.85       .05302123
+    SPY         2001-04-06      93.88       .03792075
+    SPY         2001-09-17      86.67      -.03092189
+    SPY         2001-09-18      86.46      -.01839001
+    SPY         2001-09-19      84.72      -.00177054
+    SPY         2001-09-20      82.02      .039990246
+    SPY         2001-09-21      81.14      .073576534
+    SPY         2001-09-24      83.99      .035480414
+    SPY         2001-09-25      84.87      .037586898
+    SPY         2001-09-26      84.57      .058767885
+    SPY         2001-09-27       85.3      .050644783
+    SPY         2001-09-28      87.11       .02674779
+    SPY         2001-10-01      86.97      .021731632
+    SPY         2001-10-02      88.06      .003633886
+    SPY         2002-06-25      81.89      -.02649896
+    SPY         2002-07-10      77.33      -.01500065
+    SPY         2002-07-12       77.1      -.07769131
+    SPY         2002-07-16      76.02        -.117206
+    SPY         2002-07-17      76.17      -.06629907
+    SPY         2002-07-18       73.7      -.04328358
+    SPY         2002-07-19      71.11      .010406413
+    SPY         2002-07-22         69      .092028986
+    SPY         2002-07-23      67.11       .13753539
+    SPY         2002-07-24      71.12      .075928009
+    SPY         2002-07-25      70.51      .056871366
+    SPY         2002-07-26      71.85      .013917884
+    SPY         2002-07-29      75.35      -.06675514
+    SPY         2002-08-05      70.32      .081769056
+    SPY         2002-08-06      72.68      .027517887
+    SPY         2002-09-19       71.1       .01673699
+    SPY         2002-09-20      71.12        -.018982
+    SPY         2002-09-23      70.54      -.02239864
+    SPY         2002-09-24       69.4      .041498559
+    SPY         2002-09-25      71.12      -.01420135
+    SPY         2002-09-27      69.77       -.0235058
+    SPY         2002-09-30      68.96       -.0324826
+    SPY         2002-10-07      66.72      .069544365
+    SPY         2002-10-08      67.77      .103585657
+    SPY         2002-10-09      65.85      .108276386
+    SPY         2002-10-10      67.99      .094719812
+    SPY         2003-02-11      70.69      .020936483
+    SPY         2003-02-12      69.56      .027170788
+    SPY         2003-02-13      69.78      .034250502
+    SPY         2008-01-22      121.1       .03971924
+    SPY         2008-01-25     123.25      .049168357
+    SPY         2008-01-28     125.29      .019075744
+    SPY         2008-07-07     116.97      -.01838078
+    SPY         2008-07-15      113.2      .053710247
+    SPY         2008-09-29     104.82      -.05981683
+    SPY         2008-10-02     105.26      -.18915067
+    SPY         2008-10-03     103.84      -.19799692
+    SPY         2008-10-06      98.55      -.03216641
+    SPY         2008-10-07      94.13      -.00169978
+    SPY         2008-10-08      91.76      -.07683086
+    SPY         2008-10-09      85.35      .033860574
+    SPY         2008-10-10      83.28      .053314121
+    SPY         2008-10-13      95.38      -.02505766
+    SPY         2008-10-14      93.97      -.04001277
+    SPY         2008-10-15      84.71      .006964939
+    SPY         2008-10-16      88.24      -.02209882
+    SPY         2008-10-17      87.72      -.06623347
+    SPY         2008-10-20      92.99      -.15044628
+    SPY         2008-10-21      90.21      -.02194879
+    SPY         2008-10-22       85.3      .026846424
+    SPY         2008-10-23      86.29      .050179627
+    SPY         2008-10-24      81.91      .112440483
+    SPY         2008-10-27         79      .156835443
+    SPY         2008-10-28      88.23      .070950924
+    SPY         2008-10-29      87.59      .033451307
+    SPY         2008-10-30      90.62      -.05638932
+    SPY         2008-10-31      91.12      -.03061896
+    SPY         2008-11-03      91.39      -.04617573
+    SPY         2008-11-11      84.48      -.02994792
+    SPY         2008-11-12      80.76      -.05027241
+    SPY         2008-11-18      81.95      -.01635143
+    SPY         2008-11-19       76.7      .091655802
+    SPY         2008-11-20         71      .194084507
+    SPY         2008-11-21      74.83      .032607243
+    SPY         2008-12-01      77.27       .10832147
+    SPY         2008-12-02      80.24      .049725823
+    SPY         2008-12-03      82.17      .032006815
+    SPY         2008-12-04      80.27      .031020306
+    SPY         2009-01-20      76.44      .049058085
+    SPY         2009-02-03      79.44      -.00742699
+    SPY         2009-02-04      79.06      .003162155
+    SPY         2009-02-05      80.23      -.01071918
+    SPY         2009-02-23      70.82      -.05422197
+    SPY         2009-02-26      71.74      -.09018679
+    SPY         2009-02-27      70.14      -.06786427
+    SPY         2009-03-02      66.98       -.0352344
+    SPY         2009-03-03      66.48      .029933815
+    SPY         2009-03-04      68.05      .012637766
+    SPY         2009-03-05      65.27      .097441397
+    SPY         2009-03-06      65.38      .104160294
+    SPY         2009-03-09      64.62      .113741876
+    SPY         2009-03-10      68.47      .083248138
+    SPY         2009-03-11      68.91      .100420839
+    SPY         2010-05-20     104.39       .02988792
+    SPY         2010-05-21     105.91      .002360495
+    SPY         2010-05-24     104.55      -.00162602
+    SPY         2010-05-25     104.66      .023218039
+    SPY         2010-05-26     104.03      .032971258
+    SPY         2010-05-28     106.16      -.03541824
+    SPY         2011-08-04     119.64      -.02432297
+    SPY         2011-08-05     119.46      -.01632346
+    SPY         2011-08-08     111.68      .074498567
+    SPY         2011-08-09     116.88      .017881588
+    SPY         2011-08-10     111.71      .065705845
+    SPY         2011-08-11     116.73      -.02407265
+    SPY         2011-08-12     117.51      -.04637903
+    SPY         2011-08-17     119.05      -.01327173
+    SPY         2011-08-18     113.92      .015449438
+    SPY         2011-08-19     112.06      .047296091
+    SPY         2011-08-22     112.15      .076593848
+    SPY         2011-08-23     115.84      .044975829
+    SPY         2011-08-24     117.47      .035072785
+    SPY         2011-08-25     115.68       .04011065
+    
+    134 rows selected.
+    
+    Elapsed: 00:00:00.00
+    09:28:47 SQL> 
+    09:28:47 SQL> 
+    09:28:47 SQL> exit
+    Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production
+    With the Partitioning, OLAP, Data Mining and Real Application Testing options
+    oracle@z2:/pt/s/rluck/svmd/bp$ 
+    oracle@z2:/pt/s/rluck/svmd/bp$ 
+    oracle@z2:/pt/s/rluck/svmd/bp$ 
+
+%br/
+%br/
+
