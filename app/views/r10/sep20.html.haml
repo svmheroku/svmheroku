@@ -1118,6 +1118,36 @@ SQL is well suited to answer this question as demonstrated by the script below:
     
     Elapsed: 00:00:00.02
     09:28:47 SQL> 
+
+%br/
+%br/
+The last query shows a significant negative correlation between negative moving average slopes and resulting gains.
+%br/
+%br/
+In plain English it could be stated like this:
+%br/
+%br/
+
+When the slope of the moving average is abnormally negative 
+(more than two standard deviations to the left of the mean), that is a bullish indicator for SPY.
+
+%br/
+%br/
+
+In this situation we should expect a return of 1.4% / week.
+%br/
+%br/
+Since 1998 this situation as appeared 134 times and offered a cumulative return of 187%.
+
+%br/
+%br/
+
+All 134 opportunities are listed below:
+%br/
+%br/
+
+%pre.sql
+  :preserve
     09:28:47 SQL> SELECT
     09:28:47   2  tkr
     09:28:47   3  ,ydate
@@ -1197,7 +1227,7 @@ SQL is well suited to answer this question as demonstrated by the script below:
     SPY         2008-07-15      113.2      .053710247
     SPY         2008-09-29     104.82      -.05981683
     SPY         2008-10-02     105.26      -.18915067
-    SPY         2008-10-03     103.84      -.19799692
+    SPY         2008-10-03     103.84      -.19799692 A loss of 19.8% !
     SPY         2008-10-06      98.55      -.03216641
     SPY         2008-10-07      94.13      -.00169978
     SPY         2008-10-08      91.76      -.07683086
@@ -1223,7 +1253,7 @@ SQL is well suited to answer this question as demonstrated by the script below:
     SPY         2008-11-12      80.76      -.05027241
     SPY         2008-11-18      81.95      -.01635143
     SPY         2008-11-19       76.7      .091655802
-    SPY         2008-11-20         71      .194084507
+    SPY         2008-11-20         71      .194084507 A gain of 19.4% !
     SPY         2008-11-21      74.83      .032607243
     SPY         2008-12-01      77.27       .10832147
     SPY         2008-12-02      80.24      .049725823
@@ -1276,7 +1306,3 @@ SQL is well suited to answer this question as demonstrated by the script below:
     oracle@z2:/pt/s/rluck/svmd/bp$ 
     oracle@z2:/pt/s/rluck/svmd/bp$ 
     oracle@z2:/pt/s/rluck/svmd/bp$ 
-
-%br/
-%br/
-
