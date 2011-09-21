@@ -1827,6 +1827,281 @@ With that discussion behind us, I now display the script to download prices for 
 
 %br/
 %br/
+Next, I display the SQL script I use to look for abnormal moving average slopes which are recent:
+%br/
+%br/
+
+%pre.sql
+  :preserve
+    04:08:14 SQL> @qry_batsig3
+    04:08:16 SQL> --
+    04:08:16 SQL> -- qry_batsig3.sql
+    04:08:16 SQL> --
+    04:08:16 SQL> 
+    04:08:16 SQL> -- Helps me look at recent data for abnormally large MAS.
+    04:08:16 SQL> 
+    04:08:16 SQL> select min(ydate),max(ydate)from ystk_stage;
+    
+    MIN(YDATE) MAX(YDATE)
+    ---------- ----------
+    1962-01-02 2011-09-19
+    
+    Elapsed: 00:00:00.04
+    04:08:16 SQL> 
+    04:08:16 SQL> -- Get prices from past and future in same row as price1:
+    04:08:16 SQL> CREATE OR REPLACE VIEW batsigv30 AS
+    04:08:16   2  SELECT
+    04:08:16   3  tkr
+    04:08:16   4  ,ydate
+    04:08:16   5  ,LAG(clse,1,NULL)OVER(PARTITION BY tkr ORDER BY ydate) price0
+    04:08:16   6  ,clse price1
+    04:08:16   7  ,LEAD(clse,5,NULL)OVER(PARTITION BY tkr ORDER BY ydate) price2
+    04:08:16   8  FROM ystk_stage
+    04:08:16   9  -- Prevent divide by 0 later on:
+    04:08:16  10  WHERE clse>0
+    04:08:16  11  /
+    
+    View created.
+    
+    Elapsed: 00:00:00.19
+    04:08:16 SQL> 
+    04:08:16 SQL> CREATE OR REPLACE VIEW batsigv32 AS
+    04:08:16   2  SELECT
+    04:08:16   3  tkr
+    04:08:16   4  ,ydate
+    04:08:16   5  ,price1
+    04:08:16   6  ,price2
+    04:08:16   7  ,(price2 - price1)/price1 gain1week
+    04:08:16   8  ,AVG(price1)OVER(PARTITION BY tkr ORDER BY ydate ROWS BETWEEN 4*5 PRECEDING AND CURRENT ROW)
+    04:08:16   9  -AVG(price0)OVER(PARTITION BY tkr ORDER BY ydate ROWS BETWEEN 4*5 PRECEDING AND CURRENT ROW)mas1
+    04:08:16  10  FROM batsigv30
+    04:08:16  11  /
+    
+    View created.
+    
+    Elapsed: 00:00:00.02
+    04:08:16 SQL> 
+    04:08:16 SQL> 
+    04:08:16 SQL> CREATE OR REPLACE VIEW batsigv34 AS
+    04:08:16   2  SELECT
+    04:08:16   3  tkr
+    04:08:16   4  ,ydate
+    04:08:16   5  ,price1
+    04:08:16   6  ,price2
+    04:08:16   7  ,gain1week
+    04:08:16   8  ,mas1/price1 mvg_avg_slope
+    04:08:16   9  ,STDDEV(mas1/price1)OVER(PARTITION BY tkr)stddev4tkr
+    04:08:16  10  FROM batsigv32
+    04:08:16  11  /
+    
+    View created.
+    
+    Elapsed: 00:00:00.02
+    04:08:16 SQL> 
+    04:08:16 SQL> PURGE RECYCLEBIN;
+    
+    Recyclebin purged.
+    
+    Elapsed: 00:00:00.09
+    04:08:16 SQL> DROP TABLE batsig3;
+    
+    Table dropped.
+    
+    Elapsed: 00:00:00.14
+    04:08:16 SQL> CREATE TABLE batsig3 COMPRESS AS
+    04:08:16   2  SELECT
+    04:08:16   3  tkr
+    04:08:16   4  ,ydate
+    04:08:16   5  ,price1
+    04:08:16   6  ,price2
+    04:08:16   7  ,gain1week
+    04:08:16   8  ,mvg_avg_slope
+    04:08:16   9  ,stddev4tkr
+    04:08:16  10  FROM batsigv34
+    04:08:16  11  /
+    
+    Table created.
+    
+    Elapsed: 00:00:02.36
+    04:08:19 SQL> 
+    04:08:19 SQL> -- Look for recent abnormally large MAS:
+    04:08:19 SQL> 
+    04:08:19 SQL> SELECT
+    04:08:19   2  ydate
+    04:08:19   3  ,tkr
+    04:08:19   4  ,CASE WHEN SIGN(mvg_avg_slope)>0 THEN'slope_up'ELSE'slope_down'END up_down
+    04:08:19   5  ,mvg_avg_slope
+    04:08:19   6  ,gain1week
+    04:08:19   7  FROM batsig3
+    04:08:19   8  WHERE ABS(mvg_avg_slope)> 2*stddev4tkr
+    04:08:19   9  -- recent
+    04:08:19  10  AND ydate > sysdate - 40
+    04:08:19  11  ORDER BY ydate,tkr
+    04:08:19  12  /
+    
+    YDATE      TKR         UP_DOWN    MVG_AVG_SLOPE  GAIN1WEEK
+    ---------- ----------- ---------- ------------- ----------
+    2011-08-12 BBT         slope_down    -.01108175 -.06183057
+    2011-08-12 C           slope_down    -.01461275 -.10318258
+    2011-08-12 CAT         slope_down    -.00918341 -.10956464
+    2011-08-12 CEO         slope_down    -.01059212 -.01888646
+    2011-08-12 DNDN        slope_down    -.13211186 .162970106
+    2011-08-12 DTV         slope_down    -.00966884 -.03253346
+    2011-08-12 STT         slope_down     -.0130719 -.07987313
+    2011-08-12 TKR         slope_down     -.0125103 -.13057158
+    2011-08-15 BBT         slope_down    -.00928111 -.09532798
+    2011-08-15 CAT         slope_down    -.00913606 -.12564299
+    2011-08-15 DNDN        slope_down    -.09843779 -.06007905
+    2011-08-15 DTV         slope_down     -.0090005 -.04787962
+    2011-08-15 STT         slope_down    -.01227027 -.08837877
+    2011-08-15 TKR         slope_down    -.01099275 -.15398366
+    2011-08-16 BBT         slope_down    -.00954212 -.04757328
+    2011-08-16 CAT         slope_down    -.00983292 -.07129267
+    2011-08-16 DNDN        slope_down    -.09163114 -.04361132
+    2011-08-16 DTV         slope_down    -.00840081  -.0300478
+    2011-08-16 STT         slope_down    -.01150897 -.04394334
+    2011-08-16 TKR         slope_down    -.01185786 -.08957184
+    2011-08-17 BBT         slope_down    -.00975986 -.02049571
+    2011-08-17 CAT         slope_down    -.01195366 -.02555911
+    2011-08-17 DNDN        slope_down    -.09296709 -.07040121
+    2011-08-17 DTV         slope_down    -.00911123 -.03249097
+    2011-08-17 MT          slope_down    -.02060543 -.06615315
+    2011-08-17 TKR         slope_down    -.01415185   -.037751
+    2011-08-17 UA          slope_down    -.01872876 .063916131
+    2011-08-18 BBT         slope_down    -.01405231 .027791814
+    2011-08-18 C           slope_down    -.01809115 .066118656
+    2011-08-18 CAT         slope_down    -.01541776 -.00096004
+    2011-08-18 CEO         slope_down    -.01073965  .01719929
+    2011-08-18 DNDN        slope_down    -.10597923 -.01503759
+    2011-08-18 DTV         slope_down    -.01089295 -.01919925
+    2011-08-18 GLD         slope_up       .00581439  -.0301598
+    2011-08-18 MET         slope_down    -.01347737 -.01066834
+    2011-08-18 MT          slope_down    -.02665913 -.01186944
+    2011-08-18 STT         slope_down    -.01447374 .028160392
+    2011-08-18 TKR         slope_down    -.02053852 .016509434
+    2011-08-18 TM          slope_down    -.00848986  -.0041917
+    2011-08-18 UA          slope_down    -.02163029 .067705535
+    2011-08-18 VLO         slope_down    -.01587302 .049325026
+    2011-08-19 BBT         slope_down    -.01734747  .07628438
+    2011-08-19 C           slope_down    -.02408524 .114680613
+    2011-08-19 CAT         slope_down    -.01883444 .064899337
+    2011-08-19 DNDN        slope_down     -.1068862 -.01575456
+    2011-08-19 DTV         slope_down    -.01144765 .013832578
+    2011-08-19 FSLR        slope_down    -.01961037 .135656292
+    2011-08-19 GLD         slope_up      .006647349 -.01378161
+    2011-08-19 GOOG        slope_down    -.01125874 .073209484
+    2011-08-19 IYR         slope_down    -.00859102 .031326665
+    2011-08-19 MET         slope_down    -.01668885 .010600707
+    2011-08-19 MT          slope_down    -.03240335 .031186094
+    2011-08-19 STT         slope_down    -.01720613 .066750235
+    2011-08-19 TKR         slope_down    -.02224424 .087454765
+    2011-08-19 TM          slope_down    -.00994814 .013437058
+    2011-08-19 UA          slope_down     -.0249373  .27889352
+    2011-08-19 VLO         slope_down    -.02026719 .108926674
+    2011-08-22 BBT         slope_down    -.01741312 .134063641
+    2011-08-22 C           slope_down    -.02592917 .200690714
+    2011-08-22 CAT         slope_down    -.01505642 .103392164
+    2011-08-22 CEO         slope_down    -.01138851 .088313451
+    2011-08-22 DNDN        slope_down    -.10897513 .030277544
+    2011-08-22 DTV         slope_down    -.01207581 .043342912
+    2011-08-22 FSLR        slope_down    -.01977521  .16659065
+    2011-08-22 GLD         slope_up      .007344462  -.0579663
+    2011-08-22 GOOG        slope_down    -.01147629 .082120561
+    2011-08-22 GS          slope_down    -.01295522 .089744797
+    2011-08-22 IYR         slope_down    -.00877217 .062158599
+    2011-08-22 MET         slope_down    -.01742084 .089986911
+    2011-08-22 MT          slope_down    -.03216845 .080859775
+    2011-08-22 RIG         slope_down    -.01325736 .110193392
+    2011-08-22 STT         slope_down    -.01626272 .112055398
+    2011-08-22 TKR         slope_down    -.02210628 .150618775
+    2011-08-22 TM          slope_down    -.00976818 .022115112
+    2011-08-22 UA          slope_down    -.02013965 .252187891
+    2011-08-22 VLO         slope_down    -.01938452 .145723337
+    2011-08-22 WDC         slope_down    -.02071096 .098076198
+    2011-08-23 BBT         slope_down    -.01508817 .095358224
+    2011-08-23 C           slope_down    -.02192707  .13250366
+    2011-08-23 CAT         slope_down    -.01301518 .082550012
+    2011-08-23 DNDN        slope_down    -.09832381      -.032
+    2011-08-23 DTV         slope_down    -.01011388 .027458343
+    2011-08-23 GLD         slope_up      .005448839 .008048629
+    2011-08-23 GS          slope_down    -.01336408 .081096302
+    2011-08-23 MET         slope_down     -.0145281 .042680999
+    2011-08-23 MT          slope_down    -.02934607 .066866267
+    2011-08-23 STT         slope_down    -.01376589 .061384941
+    2011-08-23 TKR         slope_down    -.01860248 .098095788
+    2011-08-23 TM          slope_down    -.00735064  -.0266191
+    2011-08-23 VLO         slope_down    -.01535259 .092896175
+    2011-08-24 BBT         slope_down    -.01337041 .084671533
+    2011-08-24 C           slope_down    -.01884677 .091388401
+    2011-08-24 CAT         slope_down    -.01104048  .06557377
+    2011-08-24 DNDN        slope_down    -.10020164          0
+    2011-08-24 DTV         slope_down    -.01019456 .025419776
+    2011-08-24 GS          slope_down    -.01178136 .056737589
+    2011-08-24 MET         slope_down    -.01241601 .030674847
+    2011-08-24 MT          slope_down    -.02596983 .065987385
+    2011-08-24 STT         slope_down    -.01165325 .042253521
+    2011-08-24 TKR         slope_down    -.01481305 .094880356
+    2011-08-24 TM          slope_down    -.00794091 -.00332963
+    2011-08-24 VLO         slope_down    -.01387143 .110459433
+    2011-08-25 BBT         slope_down    -.01247834 .064896755
+    2011-08-25 CAT         slope_down    -.01034749 .063663664
+    2011-08-25 DNDN        slope_down    -.10307363 .008481764
+    2011-08-25 DTV         slope_down     -.0108561 .035330628
+    2011-08-25 MT          slope_down    -.02707469 .065065065
+    2011-08-25 STT         slope_down     -.0113696 .036022626
+    2011-08-25 TKR         slope_down     -.0146807 .091647332
+    2011-08-25 TM          slope_down    -.00728283 -.00140311
+    2011-08-26 BBT         slope_down    -.01154888 .008196721
+    2011-08-26 DNDN        slope_down    -.10093473 -.07666386
+    2011-08-26 DTV         slope_down    -.00982402 -.00682192
+    2011-08-26 MET         slope_down    -.01263888 -.02193261
+    2011-08-26 MT          slope_down    -.02526147 -.01140307
+    2011-08-26 STT         slope_down    -.01079962 -.02085781
+    2011-08-29 BBT         slope_down    -.00863013 -.03909844
+    2011-08-29 DNDN        slope_down    -.09582119 -.11755102
+    2011-08-29 DTV         slope_down    -.00777075 -.03465687
+    2011-08-29 MT          slope_down    -.02196068 -.11695076
+    2011-08-30 BBT         slope_down    -.00855432 .024412713
+    2011-08-30 DNDN        slope_down    -.09543487 -.04049587
+    2011-08-30 DTV         slope_down    -.00725489 -.02512563
+    2011-08-30 GLD         slope_up      .005684507 -.01127862
+    2011-08-30 TM          slope_down    -.00726972  -.0153651
+    2011-08-31 DNDN        slope_down    -.08802544 -.11400651
+    2011-09-01 DNDN        slope_down    -.09591894  -.0412111
+    2011-09-02 GLD         slope_up       .00587312 -.03585462
+    2011-09-06 GLD         slope_up      .005506522 -.02383816
+    
+    129 rows selected.
+    
+    Elapsed: 00:00:00.08
+    04:08:19 SQL> 
+    04:08:19 SQL> SELECT
+    04:08:19   2  CASE WHEN SIGN(mvg_avg_slope)>0 THEN'slope_up'ELSE'slope_down'END up_down
+    04:08:19   3  ,AVG(gain1week)
+    04:08:19   4  ,SUM(gain1week)
+    04:08:19   5  ,COUNT(gain1week)
+    04:08:19   6  ,AVG(gain1week)/STDDEV(gain1week) sharpe_ratio
+    04:08:19   7  FROM batsig3
+    04:08:19   8  WHERE ABS(mvg_avg_slope)> 2*stddev4tkr
+    04:08:19   9  -- recent
+    04:08:19  10  AND ydate > sysdate - 40
+    04:08:19  11  GROUP BY SIGN(mvg_avg_slope)
+    04:08:19  12  ORDER BY SIGN(mvg_avg_slope)
+    04:08:19  13  /
+    
+    UP_DOWN    AVG(GAIN1WEEK) SUM(GAIN1WEEK) COUNT(GAIN1WEEK) SHARPE_RATIO
+    ---------- -------------- -------------- ---------------- ------------
+    slope_down        .024641     3.00620196              122   .312304457
+    slope_up       -.02354721     -.16483048                7   -1.1259565
+    
+    Elapsed: 00:00:00.06
+    04:08:19 SQL> 
+    04:08:19 SQL> exit
+    Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - Production
+    With the Partitioning, OLAP, Data Mining and Real Application Testing options
+    oracle@h2:/pt/s/rluck/svmd/bp$ 
+%br/
+%br/
 
 %br/
 %br/
