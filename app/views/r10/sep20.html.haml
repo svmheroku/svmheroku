@@ -1602,10 +1602,233 @@ The above query gives me a list of tkrs which exhibit negative correlation betwe
 For example I see that GOOG, the tkr for Google, has a correlation of -0.532438
 %br/
 %br/
-Between 2006-02-07 and 2011-08-22 I had 51 opportunities to trade on this signal.
+Between 2006-02-07 and 2011-08-22 I had 51 opportunities to trade GOOG on this signal.
 %br/
 %br/
 The average one week gain of these 51 opportunities was 1.2%
 %br/
 %br/
+
+%h4 How do I trade using this idea?
+
+Using moving average slope to generate buy or sell signals depends on a simple idea.
+%br/
+%br/
+Every day I download tkr prices from Yahoo into a table.
+%br/
+%br/
+I use SQL to inspect the slope of the moving average of tkrs which exhibited negative correlation in the past.
+%br/
+%br/
+So that is it.  In the evening after Yahoo has collected closing prices, I download prices and then I run a SQL script.
+%br/
+%br/
+I offer more discussion before I display the download script and the SQL script.
+%br/
+%br/
+
+If the slope of the moving average for any tkr is more than two standard deviations from the mean, I interpret that as a signal to buy or sell.
+
+%br/
+%br/
+One subtle point is that negative correlation usually occurs when moving average slope is negative.
+
+%br/
+%br/
+Using GOOG as an example again, it appears that it only exhibits strong negative correlation when it has an abnormally negative moving average slope.
+%br/
+%br/
+I see no evidence that GOOG exhibits strong negative correlation when it has an abnormally positive moving average slope.
+%br/
+%br/
+Some tkrs do, however, exhibit strong negative correlation when moving average slope is abnormally positive.
+%br/
+%br/
+The most commonly known tkr which exhibits this behavior is AXP, the tkr for American Express.
+%br/
+%br/
+In fact, I see only one tkr which exhibits strong negative correlation for both negative and positive slopes.
+%br/
+%br/
+That tkr is EGO which is the tkr for Eldorado Gold Corporation.
+%br/
+%br/
+With that discussion behind us, I now display the script to download prices for tkrs which exhibit strong negative correlation:
+%br/
+
+%pre.bash
+  :preserve
+    #!/bin/bash
+    
+    # getload_tkrs.bash
+    
+    . /pt/s/rluck/svmd/.orcl
+    
+    # Use wget to download csv files full of pricing data from finance.yahoo.com
+    
+    set -x
+    
+    # cd to the right place
+    cd /pt/s/rluck/svmd/bp/cf/
+    
+    # avoid bumping into old data
+    
+    rm -f *csv
+    
+    # wget em
+    
+    wget --output-document=ABX.csv http://ichart.finance.yahoo.com/table.csv?s=ABX 
+    wget --output-document=AMGN.csv http://ichart.finance.yahoo.com/table.csv?s=AMGN
+    wget --output-document=AMZN.csv http://ichart.finance.yahoo.com/table.csv?s=AMZN
+    wget --output-document=APC.csv http://ichart.finance.yahoo.com/table.csv?s=APC 
+    wget --output-document=APOL.csv http://ichart.finance.yahoo.com/table.csv?s=APOL
+    wget --output-document=ARG.csv http://ichart.finance.yahoo.com/table.csv?s=ARG 
+    wget --output-document=AU.csv http://ichart.finance.yahoo.com/table.csv?s=AU  
+    wget --output-document=AUY.csv http://ichart.finance.yahoo.com/table.csv?s=AUY 
+    wget --output-document=AXP.csv http://ichart.finance.yahoo.com/table.csv?s=AXP 
+    wget --output-document=AXU.csv http://ichart.finance.yahoo.com/table.csv?s=AXU 
+    wget --output-document=BBT.csv http://ichart.finance.yahoo.com/table.csv?s=BBT 
+    wget --output-document=BIDU.csv http://ichart.finance.yahoo.com/table.csv?s=BIDU
+    wget --output-document=C.csv http://ichart.finance.yahoo.com/table.csv?s=C   
+    wget --output-document=CAT.csv http://ichart.finance.yahoo.com/table.csv?s=CAT 
+    wget --output-document=CELG.csv http://ichart.finance.yahoo.com/table.csv?s=CELG
+    wget --output-document=CEO.csv http://ichart.finance.yahoo.com/table.csv?s=CEO 
+    wget --output-document=CMG.csv http://ichart.finance.yahoo.com/table.csv?s=CMG 
+    wget --output-document=CREE.csv http://ichart.finance.yahoo.com/table.csv?s=CREE
+    wget --output-document=DNDN.csv http://ichart.finance.yahoo.com/table.csv?s=DNDN
+    wget --output-document=DTV.csv http://ichart.finance.yahoo.com/table.csv?s=DTV 
+    wget --output-document=EBAY.csv http://ichart.finance.yahoo.com/table.csv?s=EBAY
+    wget --output-document=EFA.csv http://ichart.finance.yahoo.com/table.csv?s=EFA 
+    wget --output-document=EGO.csv http://ichart.finance.yahoo.com/table.csv?s=EGO 
+    wget --output-document=EGO.csv http://ichart.finance.yahoo.com/table.csv?s=EGO 
+    wget --output-document=FSLR.csv http://ichart.finance.yahoo.com/table.csv?s=FSLR
+    wget --output-document=FXI.csv http://ichart.finance.yahoo.com/table.csv?s=FXI 
+    wget --output-document=GDX.csv http://ichart.finance.yahoo.com/table.csv?s=GDX 
+    wget --output-document=GFI.csv http://ichart.finance.yahoo.com/table.csv?s=GFI 
+    wget --output-document=GLD.csv http://ichart.finance.yahoo.com/table.csv?s=GLD 
+    wget --output-document=GOOG.csv http://ichart.finance.yahoo.com/table.csv?s=GOOG
+    wget --output-document=GS.csv http://ichart.finance.yahoo.com/table.csv?s=GS  
+    wget --output-document=HAL.csv http://ichart.finance.yahoo.com/table.csv?s=HAL 
+    wget --output-document=HMY.csv http://ichart.finance.yahoo.com/table.csv?s=HMY 
+    wget --output-document=IAG.csv http://ichart.finance.yahoo.com/table.csv?s=IAG 
+    wget --output-document=IOC.csv http://ichart.finance.yahoo.com/table.csv?s=IOC 
+    wget --output-document=IYR.csv http://ichart.finance.yahoo.com/table.csv?s=IYR 
+    wget --output-document=LVS.csv http://ichart.finance.yahoo.com/table.csv?s=LVS 
+    wget --output-document=MDT.csv http://ichart.finance.yahoo.com/table.csv?s=MDT 
+    wget --output-document=MET.csv http://ichart.finance.yahoo.com/table.csv?s=MET 
+    wget --output-document=MOS.csv http://ichart.finance.yahoo.com/table.csv?s=MOS 
+    wget --output-document=MT.csv http://ichart.finance.yahoo.com/table.csv?s=MT  
+    wget --output-document=MVG.csv http://ichart.finance.yahoo.com/table.csv?s=MVG 
+    wget --output-document=PALL.csv http://ichart.finance.yahoo.com/table.csv?s=PALL
+    wget --output-document=PEP.csv http://ichart.finance.yahoo.com/table.csv?s=PEP 
+    wget --output-document=PM.csv http://ichart.finance.yahoo.com/table.csv?s=PM  
+    wget --output-document=PRU.csv http://ichart.finance.yahoo.com/table.csv?s=PRU 
+    wget --output-document=QCOM.csv http://ichart.finance.yahoo.com/table.csv?s=QCOM
+    wget --output-document=QQQ.csv http://ichart.finance.yahoo.com/table.csv?s=QQQ 
+    wget --output-document=RIG.csv http://ichart.finance.yahoo.com/table.csv?s=RIG 
+    wget --output-document=SCCO.csv http://ichart.finance.yahoo.com/table.csv?s=SCCO
+    wget --output-document=SINA.csv http://ichart.finance.yahoo.com/table.csv?s=SINA
+    wget --output-document=SLV.csv http://ichart.finance.yahoo.com/table.csv?s=SLV 
+    wget --output-document=SLW.csv http://ichart.finance.yahoo.com/table.csv?s=SLW 
+    wget --output-document=STT.csv http://ichart.finance.yahoo.com/table.csv?s=STT 
+    wget --output-document=SWC.csv http://ichart.finance.yahoo.com/table.csv?s=SWC 
+    wget --output-document=TKR.csv http://ichart.finance.yahoo.com/table.csv?s=TKR 
+    wget --output-document=TM.csv http://ichart.finance.yahoo.com/table.csv?s=TM  
+    wget --output-document=UA.csv http://ichart.finance.yahoo.com/table.csv?s=UA  
+    wget --output-document=V.csv http://ichart.finance.yahoo.com/table.csv?s=V   
+    wget --output-document=VECO.csv http://ichart.finance.yahoo.com/table.csv?s=VECO
+    wget --output-document=VLO.csv http://ichart.finance.yahoo.com/table.csv?s=VLO 
+    wget --output-document=VMW.csv http://ichart.finance.yahoo.com/table.csv?s=VMW 
+    wget --output-document=WDC.csv http://ichart.finance.yahoo.com/table.csv?s=WDC 
+    wget --output-document=WYNN.csv http://ichart.finance.yahoo.com/table.csv?s=WYNN
+    wget --output-document=XLU.csv http://ichart.finance.yahoo.com/table.csv?s=XLU 
+    wget --output-document=XOM.csv http://ichart.finance.yahoo.com/table.csv?s=XOM 
+    wget --output-document=YUM.csv http://ichart.finance.yahoo.com/table.csv?s=YUM 
+    
+    
+    # clobber ystk_stage.csv:
+    cat ABX.csv     | awk  '{print "ABX,"$0}' | grep 0 >ystk_stage.csv       
+    # Now append to it:
+    cat AMGN.csv | awk  '{print "AMGN,"$0}'| grep 0 >>ystk_stage.csv 
+    cat AMZN.csv | awk '{print "AMZN,"$0}' | grep 0 >>ystk_stage.csv 
+    cat APC.csv  | awk '{print "APC,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat APOL.csv | awk '{print "APOL,"$0}' | grep 0 >>ystk_stage.csv    
+    cat ARG.csv  | awk '{print "ARG,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat AU.csv   | awk '{print "AU,"$0}'   | grep 0 >>ystk_stage.csv        
+    cat AUY.csv  | awk '{print "AUY,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat AXP.csv  | awk '{print "AXP,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat AXU.csv  | awk '{print "AXU,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat BBT.csv  | awk '{print "BBT,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat BIDU.csv | awk '{print "BIDU,"$0}' | grep 0 >>ystk_stage.csv    
+    cat C.csv    | awk '{print "C,"$0}'    | grep 0 >>ystk_stage.csv        
+    cat CAT.csv  | awk '{print "CAT,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat CELG.csv | awk '{print "CELG,"$0}' | grep 0 >>ystk_stage.csv    
+    cat CEO.csv  | awk '{print "CEO,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat CMG.csv  | awk '{print "CMG,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat CREE.csv | awk '{print "CREE,"$0}' | grep 0 >>ystk_stage.csv    
+    cat DNDN.csv | awk '{print "DNDN,"$0}' | grep 0 >>ystk_stage.csv    
+    cat DTV.csv  | awk '{print "DTV,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat EBAY.csv | awk '{print "EBAY,"$0}' | grep 0 >>ystk_stage.csv    
+    cat EFA.csv  | awk '{print "EFA,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat EGO.csv  | awk '{print "EGO,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat EGO.csv  | awk '{print "EGO,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat FSLR.csv | awk '{print "FSLR,"$0}' | grep 0 >>ystk_stage.csv    
+    cat FXI.csv  | awk '{print "FXI,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat GDX.csv  | awk '{print "GDX,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat GFI.csv  | awk '{print "GFI,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat GLD.csv  | awk '{print "GLD,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat GOOG.csv | awk '{print "GOOG,"$0}' | grep 0 >>ystk_stage.csv    
+    cat GS.csv   | awk '{print "GS,"$0}'   | grep 0 >>ystk_stage.csv        
+    cat HAL.csv  | awk '{print "HAL,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat HMY.csv  | awk '{print "HMY,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat IAG.csv  | awk '{print "IAG,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat IOC.csv  | awk '{print "IOC,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat IYR.csv  | awk '{print "IYR,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat LVS.csv  | awk '{print "LVS,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat MDT.csv  | awk '{print "MDT,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat MET.csv  | awk '{print "MET,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat MOS.csv  | awk '{print "MOS,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat MT.csv   | awk '{print "MT,"$0}'   | grep 0 >>ystk_stage.csv        
+    cat MVG.csv  | awk '{print "MVG,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat PALL.csv | awk '{print "PALL,"$0}' | grep 0 >>ystk_stage.csv    
+    cat PEP.csv  | awk '{print "PEP,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat PM.csv   | awk '{print "PM,"$0}'   | grep 0 >>ystk_stage.csv        
+    cat PRU.csv  | awk '{print "PRU,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat QCOM.csv | awk '{print "QCOM,"$0}' | grep 0 >>ystk_stage.csv    
+    cat QQQ.csv  | awk '{print "QQQ,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat RIG.csv  | awk '{print "RIG,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat SCCO.csv | awk '{print "SCCO,"$0}' | grep 0 >>ystk_stage.csv    
+    cat SINA.csv | awk '{print "SINA,"$0}' | grep 0 >>ystk_stage.csv    
+    cat SLV.csv  | awk '{print "SLV,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat SLW.csv  | awk '{print "SLW,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat STT.csv  | awk '{print "STT,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat SWC.csv  | awk '{print "SWC,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat TKR.csv  | awk '{print "TKR,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat TM.csv   | awk '{print "TM,"$0}'   | grep 0 >>ystk_stage.csv        
+    cat UA.csv   | awk '{print "UA,"$0}'   | grep 0 >>ystk_stage.csv        
+    cat V.csv    | awk '{print "V,"$0}'    | grep 0 >>ystk_stage.csv        
+    cat VECO.csv | awk '{print "VECO,"$0}' | grep 0 >>ystk_stage.csv    
+    cat VLO.csv  | awk '{print "VLO,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat VMW.csv  | awk '{print "VMW,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat WDC.csv  | awk '{print "WDC,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat WYNN.csv | awk '{print "WYNN,"$0}' | grep 0 >>ystk_stage.csv    
+    cat XLU.csv  | awk '{print "XLU,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat XOM.csv  | awk '{print "XOM,"$0}'  | grep 0 >>ystk_stage.csv        
+    cat YUM.csv  | awk '{print "YUM,"$0}'  | grep 0 >>ystk_stage.csv 
+    
+    # Load this into Oracle table:
+    sqlldr trade/t bindsize=20971520 readsize=20971520 rows=123456 control=ystk_stage.ctl
+    
+    # They there?
+    grep loaded ystk_stage.log
+    sqt<<EOF
+    SELECT COUNT(*)FROM ystk_stage;
+    EOF
+
+%br/
+%br/
+
+%br/
+%br/
+
 
