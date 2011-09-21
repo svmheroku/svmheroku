@@ -768,4 +768,67 @@ I show two standard deviations from the mean as two blue vertical lines.
 %br/
 
 %img(src="/images/gdist.png")
+%br/
+%br/
+Interpretation:
+%br/
+%br/
+I see a long tail of negative gains and bias towards positive gains near the mean.
+%br/
+%br/
+Next I plot data from the tails.
+%br/
+%br/
 
+
+%pre.rlanguage
+  :preserve
+    # gdist2.r
+    # I use this file to read gdist2.csv which was created from gdist.csv
+    # The data is a frequency count which I intend to display as a histogram.
+    
+    # I build gdist2.csv by hand from gdist.csv
+    gdist2 = read.csv("gdist2.csv")
+    
+    # Define the .png file which will hold the output:
+    png("gdist2.png",width = 800, height = 800)
+    
+    # Plot the R and L tails:
+    plot(gdist2$G1WR2,gdist2$GCOUNT,type="h",lwd=4,col="black",xlim=c(-0.2,0.2),
+      xlab="Left and Right Tails of Rounded Normalized 1 Week Gains",ylab="Frequency Count")
+    grid(col="black")
+    
+    # I pulled these values from my Oracle rpt:
+    g1wmin = -0.198
+    g1wmax = 0.194
+    g1wsd = 0.02515
+    g1wmean = 0.00171
+    
+    # Show Mean and 2 stddevs from mean as vertical lines:
+    abline(v = g1wmean, col="blue",lwd=2)
+    abline(v = g1wmean-2*g1wsd, col="blue",lwd=2)
+    abline(v = g1wmean+2*g1wsd, col="blue",lwd=2)
+    
+    dev.off()
+%br/
+%br/
+
+%img(src="/images/gdist2.png")
+
+%br/
+%br/
+Again,
+I see a long tail of negative gains and bias towards positive gains near the mean.
+%br/
+%br/
+I show two standard deviations from the mean as two blue vertical lines.
+%br/
+%br/
+The blue vertical line in the middle is at the mean.
+%br/
+%br/
+
+
+%h4 Then I demonstrate how to visualize mvg_avg_4wk_slope as a distribution (hint: it will look like a bell curve).
+%br/
+%br/
