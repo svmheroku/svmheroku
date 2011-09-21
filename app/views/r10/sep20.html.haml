@@ -1393,5 +1393,10 @@ corr_spy.sql reveals that this predicate gives me the best results:
 SELECT data FROM batsig  WHERE ABS(mvg_avg_slope)>= 0.005
 %br/
 %br/
-
+Inspection of the plot, however, does reveal that if I draw a vertical line at -0.01 and slowly move it to the left, the proportion of dots above the 0.0 line increases.
+%br/
+%br/
+I interpret this to mean that as moving average slope becomes more negative, the negative correlation between that slope and gain becomes stronger.
+%br/
+%br/
 
