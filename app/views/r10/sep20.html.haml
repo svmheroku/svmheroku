@@ -334,20 +334,20 @@ I Inspect the data:
     07:17:29 SQL> 
     07:17:29 SQL> SELECT tkr,ydate,clse FROM ystk_stage WHERE ydate > sysdate - 9 ORDER BY ydate;
     
-    TKR	    YDATE	     CLSE
+    TKR     YDATE            CLSE
     ----------- ---------- ----------
-    SPY	    2011-09-13	   117.13
-    SPY	    2011-09-14	   118.76
-    SPY	    2011-09-15	   120.81
-    SPY	    2011-09-16	   121.52
-    SPY	    2011-09-19	   120.31
+    SPY     2011-09-13     117.13
+    SPY     2011-09-14     118.76
+    SPY     2011-09-15     120.81
+    SPY     2011-09-16     121.52
+    SPY     2011-09-19     120.31
     
     Elapsed: 00:00:00.00
     07:17:42 SQL> SELECT tkr,MIN(ydate),MAX(ydate),MIN(clse),MAX(clse)FROM ystk_stage GROUP BY tkr;
     
-    TKR	    MIN(YDATE) MAX(YDATE)  MIN(CLSE)  MAX(CLSE)
+    TKR     MIN(YDATE) MAX(YDATE)  MIN(CLSE)  MAX(CLSE)
     ----------- ---------- ---------- ---------- ----------
-    SPY	    1993-01-29 2011-09-19      31.11	  144.2
+    SPY     1993-01-29 2011-09-19      31.11      144.2
     
     Elapsed: 00:00:00.01
     07:18:01 SQL> 
@@ -458,3 +458,314 @@ I would have expected 2008 to have the most outliers but I see none in the box p
 %img(src="/images/qry_spy_clse.png")
 %br/
 %br/
+%h4 I demonstrate how to create a table from the CSV data which contains useful columns
+
+%pre.sql
+  :preserve
+    oracle@z2:/pt/s/rluck/svmd/bp$ 
+    oracle@z2:/pt/s/rluck/svmd/bp$ 
+    oracle@z2:/pt/s/rluck/svmd/bp$ sqt @cr_batsig.sql
+    
+    SQL*Plus: Release 11.2.0.1.0 Production on Wed Sep 21 08:16:11 2011
+    
+    Copyright (c) 1982, 2009, Oracle.  All rights reserved.
+    
+    
+    Connected to:
+    Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production
+    With the Partitioning, OLAP, Data Mining and Real Application Testing options
+    
+    08:16:11 SQL> ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD';
+    
+    Session altered.
+    
+    Elapsed: 00:00:00.01
+    08:16:11 SQL> 
+    08:16:11 SQL> --
+    08:16:11 SQL> -- cr_batsig.sql
+    08:16:11 SQL> --
+    08:16:11 SQL> 
+    08:16:11 SQL> -- Get prices from past and future in same row as price1:
+    08:16:11 SQL> CREATE OR REPLACE VIEW batsigv1 AS
+    08:16:11   2  SELECT
+    08:16:11   3  tkr
+    08:16:11   4  ,ydate
+    08:16:11   5  ,LEAD(ydate,5,NULL)OVER(PARTITION BY tkr ORDER BY ydate) date1week_later
+    08:16:11   6  ,LAG(clse,1,NULL)OVER(PARTITION BY tkr ORDER BY ydate) price0
+    08:16:11   7  ,clse price1
+    08:16:11   8  ,LEAD(clse,5,NULL)OVER(PARTITION BY tkr ORDER BY ydate) price2
+    08:16:11   9  FROM ystk_stage
+    08:16:11  10  -- Prevent divide by 0 later on:
+    08:16:11  11  WHERE clse>0
+    08:16:11  12  /
+    
+    View created.
+    
+    Elapsed: 00:00:00.05
+    08:16:11 SQL> 
+    08:16:11 SQL> -- Get mvg avg for today and yesterday. Their Difference is slope.
+    08:16:11 SQL> CREATE OR REPLACE VIEW batsigv2 AS
+    08:16:11   2  SELECT
+    08:16:11   3  tkr
+    08:16:11   4  ,ydate
+    08:16:11   5  ,date1week_later
+    08:16:11   6  ,price1
+    08:16:11   7  ,price2
+    08:16:11   8  ,(price2 - price1)/price1 gain1week
+    08:16:11   9  ,AVG(price1)OVER(PARTITION BY tkr ORDER BY ydate ROWS BETWEEN 4*5 PRECEDING AND CURRENT ROW)
+    08:16:11  10  -AVG(price0)OVER(PARTITION BY tkr ORDER BY ydate ROWS BETWEEN 4*5 PRECEDING AND CURRENT ROW)mas1
+    08:16:11  11  FROM batsigv1
+    08:16:11  12  /
+    
+    View created.
+    
+    Elapsed: 00:00:00.03
+    08:16:11 SQL> 
+    08:16:11 SQL> DROP TABLE batsig;
+    
+    Table dropped.
+    
+    Elapsed: 00:00:00.11
+    08:16:11 SQL> CREATE TABLE batsig COMPRESS AS
+    08:16:11   2  SELECT
+    08:16:11   3  tkr
+    08:16:11   4  ,ydate
+    08:16:11   5  ,date1week_later
+    08:16:11   6  ,price1
+    08:16:11   7  ,price2
+    08:16:11   8  ,gain1week
+    08:16:11   9  ,mas1/price1 mvg_avg_slope
+    08:16:11  10  FROM batsigv2
+    08:16:11  11  WHERE price2 > 0
+    08:16:11  12  AND mas1 IS NOT NULL
+    08:16:11  13  /
+    
+    Table created.
+    
+    Elapsed: 00:00:00.20
+    08:16:12 SQL> 
+    08:16:12 SQL> SELECT
+    08:16:12   2  tkr
+    08:16:12   3  ,ydate
+    08:16:12   4  ,date1week_later
+    08:16:12   5  ,price1
+    08:16:12   6  ,price2
+    08:16:12   7  ,mvg_avg_slope
+    08:16:12   8  ,gain1week
+    08:16:12   9  FROM batsig
+    08:16:12  10  WHERE ydate > sysdate - 22
+    08:16:12  11  /
+    
+    TKR     YDATE      DATE1WEEK_     PRICE1     PRICE2 MVG_AVG_SLOPE  GAIN1WEEK
+    ----------- ---------- ---------- ---------- ---------- ------------- ----------
+    SPY     2011-08-31 2011-09-08     121.59     118.43    -.00127282 -.02598898
+    SPY     2011-09-01 2011-09-09     120.32     115.32      -.002058 -.04155585
+    SPY     2011-09-02 2011-09-12     117.24     116.07     -.0009748 -.00997953
+    SPY     2011-09-06 2011-09-13     116.39     117.13    -.00125604 .006357935
+    SPY     2011-09-07 2011-09-14     119.67     118.76    .003179378 -.00760425
+    SPY     2011-09-08 2011-09-15     118.43     120.81    .000623233 .020096259
+    SPY     2011-09-09 2011-09-16     115.32     121.52    .001490676 .053763441
+    SPY     2011-09-12 2011-09-19     116.07     120.31    -.00027077  .03652968
+    
+    8 rows selected.
+    
+    Elapsed: 00:00:00.02
+    08:16:12 SQL> 
+    08:16:12 SQL> exit
+    Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production
+    With the Partitioning, OLAP, Data Mining and Real Application Testing options
+    oracle@z2:/pt/s/rluck/svmd/bp$ 
+    oracle@z2:/pt/s/rluck/svmd/bp$ 
+
+%br/
+%h4 Next I demonstrate how to visualize gain1week as a distribution (hint: it will look like a bell curve). 
+
+%pre.sql
+  :preserve
+    oracle@z2:/pt/s/rluck/svmd/bp$ 
+    oracle@z2:/pt/s/rluck/svmd/bp$ 
+    oracle@z2:/pt/s/rluck/svmd/bp$ sqt @gdist
+    
+    SQL*Plus: Release 11.2.0.1.0 Production on Wed Sep 21 08:20:48 2011
+    
+    Copyright (c) 1982, 2009, Oracle.  All rights reserved.
+    
+    
+    Connected to:
+    Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production
+    With the Partitioning, OLAP, Data Mining and Real Application Testing options
+    
+    08:20:48 SQL> ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD';
+    
+    Session altered.
+    
+    Elapsed: 00:00:00.00
+    08:20:48 SQL> 
+    08:20:48 SQL> --
+    08:20:48 SQL> -- gdist.sql
+    08:20:48 SQL> --
+    08:20:48 SQL> 
+    08:20:48 SQL> -- Demonstrate how to visualize gain1week as a distribution.
+    08:20:48 SQL> 
+    08:20:48 SQL> -- Model a Normal Distribution:
+    08:20:48 SQL> 
+    08:20:48 SQL> SELECT
+    08:20:48   2  MIN(gain1week)
+    08:20:48   3  ,AVG(gain1week)
+    08:20:48   4  ,MAX(gain1week)
+    08:20:48   5  ,STDDEV(gain1week)
+    08:20:48   6  FROM batsig
+    08:20:48   7  /
+    
+    MIN(GAIN1WEEK) AVG(GAIN1WEEK) MAX(GAIN1WEEK) STDDEV(GAIN1WEEK)
+    -------------- -------------- -------------- -----------------
+        -.19799692     .001725962     .194084507        .025151243
+    
+    Elapsed: 00:00:00.07
+    08:20:48 SQL> 
+    08:20:48 SQL> CREATE OR REPLACE VIEW batsigv10 AS
+    08:20:48   2  SELECT
+    08:20:48   3  tkr
+    08:20:48   4  ,ydate
+    08:20:48   5  ,price1
+    08:20:48   6  ,gain1week
+    08:20:48   7  ,ROUND(gain1week,1)g1wr1
+    08:20:48   8  ,ROUND(gain1week,2)g1wr2
+    08:20:48   9  FROM batsig
+    08:20:48  10  /
+    
+    View created.
+    
+    Elapsed: 00:00:00.05
+    08:20:48 SQL> 
+    08:20:48 SQL> -- Gather some points for a plot.
+    08:20:48 SQL> 
+    08:20:48 SQL> -- Start with a very rough histogram:
+    08:20:48 SQL> 
+    08:20:48 SQL> SELECT
+    08:20:48   2  g1wr1
+    08:20:48   3  ,COUNT(g1wr1) gcount
+    08:20:48   4  FROM batsigv10
+    08:20:48   5  GROUP BY g1wr1
+    08:20:48   6  ORDER BY g1wr1
+    08:20:48   7  /
+    
+         G1WR1     GCOUNT
+    ---------- ----------
+           -.2          5
+           -.1        113
+             0       4466
+            .1        104
+            .2          2
+    
+    Elapsed: 00:00:00.01
+    08:20:48 SQL> 
+    08:20:48 SQL> -- Drill Down:
+    08:20:48 SQL> 
+    08:20:48 SQL> SELECT
+    08:20:48   2  g1wr2
+    08:20:48   3  ,COUNT(g1wr2) gcount
+    08:20:48   4  FROM batsigv10
+    08:20:48   5  GROUP BY g1wr2
+    08:20:48   6  ORDER BY g1wr2
+    08:20:48   7  /
+    
+         G1WR2     GCOUNT
+    ---------- ----------
+           -.2          1
+          -.19          1
+          -.17          1
+          -.16          1
+          -.15          1
+          -.14          1
+          -.13          1
+          -.12          2
+          -.11          5
+           -.1          3
+          -.09          7
+          -.08         12
+          -.07         26
+          -.06         29
+          -.05         74
+          -.04        137
+          -.03        229
+          -.02        404
+          -.01        632
+             0        969
+           .01        938
+           .02        621
+           .03        296
+           .04        151
+           .05         71
+           .06         32
+           .07         16
+           .08         11
+           .09          6
+            .1          5
+           .11          4
+           .14          1
+           .16          1
+           .19          1
+    
+    34 rows selected.
+    
+    Elapsed: 00:00:00.01
+    08:20:48 SQL> 
+    08:20:48 SQL> 
+    08:20:48 SQL> exit
+    Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production
+    With the Partitioning, OLAP, Data Mining and Real Application Testing options
+    oracle@z2:/pt/s/rluck/svmd/bp$ 
+    oracle@z2:/pt/s/rluck/svmd/bp$ 
+%br/
+%br/
+I use R to visualize the data from the second query.
+%br/
+%br/
+
+I plot a simple gain-frequency-histogram with a normal distribution overlayed on top.
+%br/
+%br/
+I show two standard deviations from the mean as two blue vertical lines.
+%br/
+%br/
+
+%pre.rlanguage
+  :preserve
+    # gdist.r
+    # I use this file to read gdist.csv which was created from gdist.sql
+    # The data is a frequency count which I intend to display as a histogram.
+    
+    # I build gdist.csv by hand from gdist.sql output
+    gdist = read.csv("gdist.csv")
+    
+    # Define the .png file which will hold the output:
+    png("gdist.png",width = 800, height = 800)
+    
+    plot(gdist$G1WR2,gdist$GCOUNT,type="h",lwd=4,col="black",xlim=c(-0.2,0.2),
+      xlab="Normal Distribution(Avg:0.0017, Std.Dev.:0.025) on top of Rounded Normalized 1 Week Gains",ylab="Frequency Count")
+    grid(col="black")
+    
+    # Now overlay another plot:
+    # http://pj.freefaculty.org/R/Rtips.html#5.11
+    par(new = TRUE) 
+    
+    g1wmin = -0.198
+    g1wmax = 0.194
+    g1wsd = 0.02515
+    g1wmean = 0.00171
+    
+    x=seq(g1wmin,g1wmax,length=200)
+    y=dnorm(x,mean=g1wmean,sd=g1wsd)
+    plot(x,y,type="l",lwd=1,col="blue",xaxt="n", yaxt="n",xlab=" ",ylab=" ",xlim=c(-0.2,0.2))
+    
+    abline(v = g1wmean, col="blue",lwd=2)
+    abline(v = g1wmean-2*g1wsd, col="blue",lwd=2)
+    abline(v = g1wmean+2*g1wsd, col="blue",lwd=2)
+    
+    dev.off()
+%br/
+%br/
+
+%img(src="/images/gdist.png")
+
