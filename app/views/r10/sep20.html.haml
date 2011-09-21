@@ -1031,7 +1031,7 @@ SQL is well suited to answer this question as demonstrated by the script below:
   :preserve
 
     oracle@z2:/pt/s/rluck/svmd/bp$ 
-    oracle@z2:/pt/s/rluck/svmd/bp$ sqt @corr_spy
+    oracle@z2:/pt/s/rluck/svmd/bp$ sqt @
     
     SQL*Plus: Release 11.2.0.1.0 Production on Wed Sep 21 09:28:47 2011
     
@@ -1306,3 +1306,92 @@ All 134 opportunities are listed below:
     oracle@z2:/pt/s/rluck/svmd/bp$ 
     oracle@z2:/pt/s/rluck/svmd/bp$ 
     oracle@z2:/pt/s/rluck/svmd/bp$ 
+%br/
+%br/
+Next, I show how to display the negative correlation between moving average slope and gain.
+%br/
+%br/
+I use SQL and then R to create a plot:
+%br/
+
+%pre.sql
+  :preserve
+    --
+    -- masg.sql
+    --
+    
+    -- I use this script to create 2 columns:
+    -- Mvg Avg Slope (mas)
+    -- Gain 1 week (g1w)
+    SET COLSEP ","
+    
+    SELECT
+    mvg_avg_slope mas
+    ,gain1week    g1w
+    FROM batsig
+    WHERE ABS(mvg_avg_slope)>= 0.004
+    ORDER BY mvg_avg_slope;
+    
+    exit
+
+%br/
+%br/
+
+%pre.rlanguage
+  :preserve
+    # masg004.r
+    # I use this script to read masg004.csv which was created from masg.sql
+    
+    masg004 = read.csv("masg004.csv")
+    
+    # Define the .png file which will hold the output:
+    png("masg004.png",width = 800, height = 800)
+    
+    plot(masg004$MAS,masg004$G1W,pch=20,col="black",xlim=c(-0.025,0.025),
+      xlab="Scatter Plot: Mvg. Avg. Slope vs. Gain 1 Wk.",ylab="Gain 1 Wk.")
+    grid(col="black")
+    
+    abline(v = 0.004, col="red",lwd=1)
+    abline(v = -0.004, col="red",lwd=1)
+    
+    abline(v = 0.0045, col="green",lwd=1)
+    abline(v = -0.0045, col="green",lwd=1)
+    
+    abline(v = 0.005, col="blue",lwd=1)
+    abline(v = -0.005, col="blue",lwd=1)
+    
+    dev.off()
+
+
+%img(src="/images/masg004.png")
+%br/
+%br/
+The red vertical line in the above plot corresponds to this predicate:
+%br/
+%br/
+SELECT data FROM batsig  WHERE ABS(mvg_avg_slope)>= 0.004
+
+%br/
+%br/
+The green vertical line corresponds to this predicate:
+%br/
+%br/
+SELECT data FROM batsig  WHERE ABS(mvg_avg_slope)>= 0.0045
+
+%br/
+%br/
+The blue vertical line corresponds to this predicate:
+%br/
+%br/
+SELECT data FROM batsig  WHERE ABS(mvg_avg_slope)>= 0.005
+%br/
+%br/
+It is not obvious from the scatter plot but inspection of the SQL output from 
+corr_spy.sql reveals that this predicate gives me the best results:
+%br/
+%br/
+SELECT data FROM batsig  WHERE ABS(mvg_avg_slope)>= 0.005
+%br/
+%br/
+
+
