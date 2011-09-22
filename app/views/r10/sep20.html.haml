@@ -742,8 +742,16 @@ I show two standard deviations from the mean as two blue vertical lines.
     # Define the .png file which will hold the output:
     png("gdist.png",width = 800, height = 800)
     
-    plot(gdist$G1WR2,gdist$GCOUNT,type="h",lwd=4,col="black",xlim=c(-0.2,0.2),
-      xlab="Normal Distribution(Avg:0.0017, Std.Dev.:0.025) on top of Rounded Normalized 1 Week Gains",ylab="Frequency Count")
+    plot(gdist$G1WR2
+      ,gdist$GCOUNT
+      ,type="h"
+      ,lwd=4
+      ,col="black"
+      ,xlim=c(-0.2,0.2)
+      ,main="Frequency Counts of Rounded Normalized Weekly Gains For SPY ETF (0.1 = 10% gain)"
+      ,xlab="Normal Distribution(Avg:0.0017, Std.Dev.:0.025) on top of Rounded Normalized 1 Week Gains"
+      ,ylab="Frequency Count"
+    )
     grid(col="black")
     
     # Now overlay another plot:
@@ -758,12 +766,14 @@ I show two standard deviations from the mean as two blue vertical lines.
     x=seq(g1wmin,g1wmax,length=200)
     y=dnorm(x,mean=g1wmean,sd=g1wsd)
     plot(x,y,type="l",lwd=1,col="blue",xaxt="n", yaxt="n",xlab=" ",ylab=" ",xlim=c(-0.2,0.2))
-    
+
+    # Draw vertical lines at mean and 2 std. dev. from mean:
     abline(v = g1wmean, col="blue",lwd=2)
     abline(v = g1wmean-2*g1wsd, col="blue",lwd=2)
     abline(v = g1wmean+2*g1wsd, col="blue",lwd=2)
     
     dev.off()
+
 %br/
 %br/
 
@@ -794,8 +804,17 @@ Next I plot data from the tails.
     png("gdist2.png",width = 800, height = 800)
     
     # Plot the R and L tails:
-    plot(gdist2$G1WR2,gdist2$GCOUNT,type="h",lwd=4,col="black",xlim=c(-0.2,0.2),
-      xlab="Left and Right Tails of Rounded Normalized 1 Week Gains",ylab="Frequency Count")
+    plot(gdist2$G1WR2
+      ,gdist2$GCOUNT
+      ,type="h"
+      ,lwd=4
+      ,col="black"
+      ,xlim=c(-0.2,0.2)
+      ,main=
+      "Tails of Frequency Counts of Rounded Normalized Weekly Gains For SPY ETF (0.1 = 10% gain)"
+      ,xlab="Left and Right Tails of Rounded Normalized 1 Week Gains (Blue Lines are Mean and 2 Std. Dev. From Mean)"
+      ,ylab="Frequency Count"
+    )
     grid(col="black")
     
     # I pulled these values from my Oracle rpt:
@@ -972,6 +991,9 @@ I used R to plot the data:
 %br/
 %pre.rlanguage
   :preserve
+
+
+
     # masr3.r
     # I use this file to read masr3.csv which was created from ma_gdist.sql
     # The data is a frequency count which I intend to display as a histogram.
