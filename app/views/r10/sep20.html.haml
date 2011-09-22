@@ -1617,6 +1617,75 @@ Next, I use SQL and R to visualize the above report as a scatter plot.
 %br/
 %br/
 The SQL I use to generate the CSV file for R is similar to the SQL I used to create a CSV file full of SPY data.
+%br/
+%br/
+It is different though for two reasons.
+%br/
+%br/
+
+I want to generate points for many tkrs instead of just SPY.
+%br/
+%br/
+
+For all of the tkrs except EGO, I only want to see points which correspond to either negative moving average slopes
+or positive moving average slopes.
+%br/
+%br/
+The SQL is displayed below:
+%br/
+
+%pre.sql
+  :preserve
+    --
+    -- masg_tkrs.sql
+    --
+    
+    -- I use this script to help build a scatter plot 
+    -- for tkrs which show a negative correlation between 
+    -- 4-week-moving-average-slope and 1-week-gain.
+    
+    -- This script depends on corr_tkr.sql:
+    -- @corr_tkr.sql
+    
+    SET COLSEP "," ECHO OFF
+    
+    CREATE OR REPLACE VIEW masg_tkrsv1 AS
+    SELECT
+    tkr
+    ,mvg_avg_slope
+    ,normlzed_gain1wk
+    FROM batsig2
+    WHERE ABS(mvg_avg_slope) > 2*stddev4tkr;
+    
+    SELECT   mvg_avg_slope,normlzed_gain1wk FROM
+    (
+      SELECT mvg_avg_slope,normlzed_gain1wk
+      ,CORR(mvg_avg_slope,normlzed_gain1wk)OVER(PARTITION BY tkr)corr4tkr
+      FROM masg_tkrsv1
+      WHERE mvg_avg_slope < 0
+    )
+    WHERE corr4tkr < -0.3;
+    
+    SELECT   mvg_avg_slope,normlzed_gain1wk FROM
+    (
+      SELECT mvg_avg_slope,normlzed_gain1wk
+      ,CORR(mvg_avg_slope,normlzed_gain1wk)OVER(PARTITION BY tkr)corr4tkr
+      FROM masg_tkrsv1
+      WHERE mvg_avg_slope > 0
+    )
+    WHERE corr4tkr < -0.3;
+
+    exit
+
+%br/
+%br/
+Next, I show the R script to plot data from the above SQL script:
+%br/
+
+%pre.rlanguage
+  :preserve
+
+
 
 %h4 How do I trade using this idea?
 
