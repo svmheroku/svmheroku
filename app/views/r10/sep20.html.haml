@@ -1684,8 +1684,40 @@ Next, I show the R script to plot data from the above SQL script:
 
 %pre.rlanguage
   :preserve
+    # masg_tkrs.r
+    # I use this script to read masg_tkrs.csv which was created from masg_tkrs.sql
+    
+    masg_tkrs = read.csv("masg_tkrs.csv")
+    
+    # Define the .png file which will hold the output:
+    png("masg_tkrs.png",width = 800, height = 1700)
+    
+    # Declare the output will be in 2 rows and 1 column:
+    par(mfrow = c(2,1))
+    
+    plot(masg_tkrs$MVG_AVG_SLOPE,masg_tkrs$NORMLZED_GAIN1WK,pch=".",col="black",
+      xlim=c(-0.1, 0.1),
+      ylim=c(-0.7, 1.0),
+      xlab="Moving Average Slope At Least 2 Std. Dev. From Mean",
+      ylab="Normalized Gain Over 1 Week. (1.0 = 100% Gain)",
+      main="Scatter Plot of Negative Correlation Stocks (Zoom In with Light Points)")
+    grid(col="black")
+    
+    plot(masg_tkrs$MVG_AVG_SLOPE,masg_tkrs$NORMLZED_GAIN1WK,pch=20,col="black",
+      xlim=c(-0.3, 0.2),
+      ylim=c(-0.7, 1.7),
+      xlab="Moving Average Slope At Least 2 Std. Dev. From Mean",
+      ylab="Normalized Gain Over 1 Week. (1.0 = 100% Gain)",
+      main="Scatter Plot of Negative Correlation Stocks (Zoom Out with Heavy Points)")
+    grid(col="black")
+    
+    dev.off()
 
 
+%br/
+Output from the above R script is displayed below:
+%br/
+%img(src="/images/masg_tkrs.png")
 
 %h4 How do I trade using this idea?
 
