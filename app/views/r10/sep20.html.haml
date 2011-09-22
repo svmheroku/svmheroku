@@ -991,9 +991,6 @@ I used R to plot the data:
 %br/
 %pre.rlanguage
   :preserve
-
-
-
     # masr3.r
     # I use this file to read masr3.csv which was created from ma_gdist.sql
     # The data is a frequency count which I intend to display as a histogram.
@@ -1005,8 +1002,16 @@ I used R to plot the data:
     png("masr3.png",width = 800, height = 800)
     
     # Plot the R and L tails:
-    plot(masr3$MASR3,masr3$GCOUNT,type="h",lwd=4,col="black",xlim=c(-0.025,0.025),
-      xlab="Rounded Normalized Moving Average Slopes",ylab="Frequency Count")
+    plot(masr3$MASR3
+      ,masr3$GCOUNT
+      ,type="h"
+      ,lwd=4
+      ,col="black"
+      ,xlim=c(-0.020,0.020)
+      ,main="Frequency Counts of Rounded Normalized Moving Average Slopes of SPY ETF"
+      ,xlab=
+      "Normal Distribution on top of Moving Average Slope Frequencies (Blue Lines are at Mean and 2 Std. Dev. From Mean)"
+      ,ylab="Frequency Count")
     grid(col="black")
     
     # I pulled these values from my Oracle rpt:
@@ -1020,15 +1025,15 @@ I used R to plot the data:
     abline(v = masr3mean-2*masr3sd, col="blue",lwd=2)
     abline(v = masr3mean+2*masr3sd, col="blue",lwd=2)
     
-    
     # Now overlay another plot:
     # http://pj.freefaculty.org/R/Rtips.html#5.11
     par(new = TRUE) 
     x=seq(masr3min,masr3max,length=200)
     y=dnorm(x,mean=masr3mean,sd=masr3sd)
-    plot(x,y,type="l",lwd=1,col="blue",xaxt="n", yaxt="n",xlab=" ",ylab=" ",xlim=c(-0.025,0.025))
+    plot(x,y,type="l",lwd=1,col="blue",xaxt="n", yaxt="n",xlab=" ",ylab=" ",xlim=c(-0.020,0.020))
     
     dev.off()
+
 %br/
 %br/
 %img(src="/images/masr3.png")
