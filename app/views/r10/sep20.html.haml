@@ -57,7 +57,9 @@ Next I demonstrate how to visualize mvg_avg_4wk_slope and gain1week as points in
 %br/
 %br/
 
-Next I answer the question, when mvg_avg_4wk_slope, was more than two standard deviations from the mean, how did gain1week usually react? (hint: we will use Pearson's Correlation here)
+Next I answer the question, when mvg_avg_4wk_slope was more than two standard deviations from the mean, 
+%br/
+how did gain1week usually react? (hint: we will use Pearson's Correlation here)
 %br/
 %br/
 
@@ -65,7 +67,9 @@ Next I discuss the question, what besides mvg_avg_4wk_slope could we mix with ga
 %br/
 %br/
 
-My goal is to find some calculated attribute of stock price which has a large correlation with gain1week (and thus be predictive).
+My goal is to find some calculated attribute of stock price which has a large correlation with gain1week
+%br/
+(and thus be predictive).
 %br/
 %br/
 
@@ -378,60 +382,47 @@ I Use SQL to create a CSV file for R to plot the data:
 
 %br/
 %br
-I Use R to plot the data:
+I Use R to plot the data (using shell command: R -f qry_spy_clse.r):
 %br/
 
 %pre.rlanguage
   :preserve
-    oracle@h2:/pt/s/rluck/svmd/bp/r$
-    oracle@h2:/pt/s/rluck/svmd/bp/r$
-    oracle@h2:/pt/s/rluck/svmd/bp/r$ R -f qry_spy_clse.r
-
+    # qry_spy_clse.r
     
-    R version 2.11.1 (2010-05-31)
-    Copyright (C) 2010 The R Foundation for Statistical Computing
-    ISBN 3-900051-07-0
+    # I use this file to read prices of SPY from qry_spy_clse.csv
+    # Then, I plot them.
+    # I build qry_spy_clse.csv by hand from qry_spy_clse.sql output
     
-    R is free software and comes with ABSOLUTELY NO WARRANTY.
-    You are welcome to redistribute it under certain conditions.
-    Type 'license()' or 'licence()' for distribution details.
+    qry_spy_clse = read.csv("qry_spy_clse.csv")
     
-      Natural language support but running in an English locale
+    # Define the .png file which will hold the output:
+    png("qry_spy_clse.png",width = 800, height = 1800)
     
-    R is a collaborative project with many contributors.
-    Type 'contributors()' for more information and
-    'citation()' on how to cite R or R packages in publications.
+    # Declare the output will be in 2 rows and 1 column:
+    par(mfrow = c(2,1))
     
-    Type 'demo()' for some demos, 'help()' for on-line help, or
-    'help.start()' for an HTML browser interface to help.
-    Type 'q()' to quit R.
+    # Show the data as a sequence of about 5,000 prices ordered by day number after Jan 1993:
+    day.vector = 1:length(qry_spy_clse$PRICE)
+    plot(day.vector
+      ,qry_spy_clse$PRICE
+      ,main="Price Of SPY ETF In Dollars Between 1993-01-29 and 2011-09-19"
+      ,xlab="Number Of Trading Days Since 1993-01-29"
+      ,ylab="Price Of SPY ETF In Dollars"
+      ,type="h"
+      ,col="#444444"
+      ,xlim=c(0,5000))
+    grid(col="black")
     
-    > # qry_spy_clse.r
-    > # I use this file to read prices of SPY from qry_spy_clse.csv
-    > # Then, I plot them.
-    > # I build qry_spy_clse.csv by hand from qry_spy_clse.sql output
-    > qry_spy_clse = read.csv("qry_spy_clse.csv")
-    > 
-    > # Define the .png file which will hold the output:
-    > png("qry_spy_clse.png",width = 800, height = 1800)
-    > 
-    > # Declare the output will be in 2 rows and 1 column:
-    > par(mfrow = c(2,1))
-    > 
-    > # Show the data as a sequence of about 5,000 prices ordered by day number after Jan 1993:
-    > day.vector = 1:length(qry_spy_clse$PRICE)
-    > plot(day.vector,qry_spy_clse$PRICE,type="h",col="#444444",xlim=c(0,5000))
-    > grid(col="black")
-    > 
-    > # Show the data as a boxplot grouped by year:
-    > boxplot (qry_spy_clse$PRICE ~ qry_spy_clse$YEAR , pch=20)
-    > grid(col="black")
-    > 
-    > dev.off()
-    null device 
-              1 
-    > 
-    > 
+    # Show the data as a boxplot grouped by year:
+    boxplot (qry_spy_clse$PRICE ~ qry_spy_clse$YEAR
+      ,pch=20
+      ,main="Box Plot of Price Of SPY Between 1993-01-29 and 2011-09-19 (Black Dots are Outliers)"
+      ,xlab="Year"
+      ,ylab="Price Of SPY ETF In Dollars"
+    )
+    grid(col="black")
+    
+    dev.off()
 
 %br/
 %br/
@@ -457,11 +448,16 @@ I would have expected 2008 to have the most outliers but I see none in the box p
 %br/
 %img(src="/images/qry_spy_clse.png")
 %br/
-More information about box plots can be found in wikipedia:
+More information about both R and box plots can be found in wikipedia:
 %br/
-%a(href="http://en.wikipedia.org/wiki/Box_plot" target="w")http://en.wikipedia.org/wiki/Box_plot
+%a(href="http://en.wikipedia.org/wiki/Box_plot" target="w")
+  http://en.wikipedia.org/wiki/Box_plot
+%br/
+%a(href="http://en.wikipedia.org/wiki/R_%28programming_language%29" target="w")
+  http://en.wikipedia.org/wiki/R_(programming_language)
 %br/
 %br/
+
 %h4 I demonstrate how to create a table from the CSV data which contains useful columns
 
 %pre.sql
@@ -1718,6 +1714,13 @@ Next, I show the R script to plot data from the above SQL script:
 Output from the above R script is displayed below:
 %br/
 %img(src="/images/masg_tkrs.png")
+%br/
+When I use my eyes to search for negative correlation in the above two charts,
+it seems more apparent in the bottom plot with heavy points.
+%br/
+%br/
+%br/
+%br/
 
 %h4 How do I trade using this idea?
 
