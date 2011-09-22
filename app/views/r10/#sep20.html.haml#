@@ -1617,6 +1617,13 @@ Next, I use SQL and R to visualize the above report as a scatter plot.
 %br/
 %br/
 The SQL I use to generate the CSV file for R is similar to the SQL I used to create a CSV file full of SPY data.
+%br/
+%br/
+It is different though for several reasons:
+
+I want to generate points for many tkrs instead of just 
+
+
 
 %h4 How do I trade using this idea?
 
