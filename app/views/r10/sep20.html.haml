@@ -1418,6 +1418,10 @@ The blue vertical line corresponds to this predicate:
 SELECT data FROM batsig  WHERE ABS(mvg_avg_slope)>= 0.005
 %br/
 %br/
+Two standard deviations from the mean is 2 x 0.002369 which lies between the green line and the blue line.
+%br/
+%br/
+
 It is not obvious from the scatter plot but inspection of the SQL output from 
 corr_spy.sql reveals that this predicate gives me the best results:
 %br/
