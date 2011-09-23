@@ -1058,7 +1058,7 @@ SQL is well suited to answer this question as demonstrated by the script below:
   :preserve
 
     oracle@z2:/pt/s/rluck/svmd/bp$ 
-    oracle@z2:/pt/s/rluck/svmd/bp$ sqt @
+    oracle@z2:/pt/s/rluck/svmd/bp$ sqt @corr_spy.sql
     
     SQL*Plus: Release 11.2.0.1.0 Production on Wed Sep 21 09:28:47 2011
     
@@ -1374,8 +1374,14 @@ I use SQL and then R to create a plot:
     # Define the .png file which will hold the output:
     png("masg004.png",width = 800, height = 800)
     
-    plot(masg004$MAS,masg004$G1W,pch=20,col="black",xlim=c(-0.025,0.025),
-      xlab="Scatter Plot: Mvg. Avg. Slope vs. Gain 1 Wk.",ylab="Gain 1 Wk.")
+    plot(masg004$MAS
+      ,masg004$G1W
+      ,pch=20
+      ,col="black"
+      ,xlim=c(-0.025,0.025)
+      ,main="Scatter Plot of SPY ETF Moving Average Slope vs. Normalized 1 Week Gain"
+      ,xlab="Mvg. Avg. Slope (Values within 2 Std. Dev. From Mean Omitted)"
+      ,ylab="Normalized 1 Week Gain (0.1 = 10% Gain)")
     grid(col="black")
     
     abline(v = 0.004, col="red",lwd=1)
@@ -1388,7 +1394,6 @@ I use SQL and then R to create a plot:
     abline(v = -0.005, col="blue",lwd=1)
     
     dev.off()
-
 
 %img(src="/images/masg004.png")
 %br/
