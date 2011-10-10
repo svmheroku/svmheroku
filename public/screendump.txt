@@ -1,6 +1,6 @@
 /pt/svcc/screendump.txt
 
-This file shows how to run rspec against a spec file which has a debugger command place at line 15.
+This file shows how to run rspec against a spec file which has a debugger command placed at line 15.
 
 -d tells rspec to start ruby-debug if it finds a debugger command
 
