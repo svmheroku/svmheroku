@@ -1,0 +1,158 @@
+/pt/svcc/rspec.txt
+
+outline of svcc rspec ruby talk:
+
+Use RSpec to Learn Ruby
+    Wiki Here
+Speaker: Dan Bikle   
+Level: Beginner   |   Room: 3525   |   2:45 PM Sunday
+   
+Ruby is a popular language. Behavior Driven Development (BDD) is an effective method for delivering high quality software. RSpec is a Domain Specific Language (DSL) for Ruby which helps you apply BDD to your Ruby programming efforts. In this session I teach you Ruby development via RSpec. It is an effective approach to teaching Ruby to the Newby. Besides syntax, a Ruby developer needs to know about a variety of ideas, sites, and tools to become effective: OOP, mixing software modules, rdoc.info, rubygems.org, github.com, editors, IDEs, ruby debugger, IRB. When I teach you to use RSpec to both learn and then drive the development of Ruby software, you will be exposed to most things used by professional Ruby developers. After you learn enough RSpec and Ruby to build and deploy a small software project to do something simple like scrape a website, the next logical step would be to use RSpec to drive your learning of Ruby on Rails. That topic will be covered in another session.
+
+oooooo
+
+Summary:
+
+Get a development laptop:
+  - My opinion:
+    - Avoid windows
+    - Avoid Mac (unless you do iOS development)
+  - costco.com
+  - 90 day return policy (I think)
+  - HP g6x Laptop $499
+  - Processor & Memory:
+    Intel® Core™ i3-370M Processor at 2.4Ghz
+    6GB DDR3 SDRAM (2 DIMM)
+    500GB (7200 RPM) SATA Hard Drive
+  - Boot windows
+  - Study this:
+    - https://wiki.ubuntu.com/WubiGuide
+  - Get ubuntu 11.04 64b cdrom:
+    - http://www.ubuntu.com/download/ubuntu/download
+    - Avoid:
+      - http://www.ubuntu.com/download/ubuntu/windows-installer
+    - Instead:
+      - click wubi.exe on cdrom
+    - pick the largest partition which ubuntu will give you:
+      - 30gb I think
+      - I wish it were bigger
+    - you want to end up with dual boot laptop
+  - If you brick the laptop, return it for refund:
+    - google: what is costco return policy for computers?
+
+Install some packages:
+  - google: what is apt-get?
+  - sudo bash
+  - apt-get install curl build-essential zlib1g-dev libssl-dev libreadline5-dev git-core aptitude
+
+Install an editor:
+  - google: How do I install emacs on ubuntu?
+  - aptitude search  emacs
+  - aptitude install emacs23
+
+Install ruby 1.9.2 in your home-dir:
+  - google: How I install ruby 1.9.2 on ubuntu using RVM?
+  - Install RVM:
+    - bash < <(curl -sk https://rvm.beginrescueend.com/install/rvm)
+    - or download https://rvm.beginrescueend.com/install/rvm and run it as a bash script:
+      - curl -sk https://rvm.beginrescueend.com/install/rvm > rvm.bash
+      - /bin/bash rvm.bash
+  - Edit .bash_profile (I prefer .bashrc and then call .bashrc in .bash_profile)
+    - [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
+  - google: What is the difference between .bash_profile and .bashrc?
+  - Use RVM to install Ruby 1.9.2:
+    - google: SSL certificate problem in RVM
+    - create ~/.curlrc and put -k in it (or install CA cert for curl)
+    - which rvm
+    - rvm install 1.9.2:
+      - This also installs ruby gems
+    - rvm list
+    - rvm --default use 1.9.2
+    - rvm list
+    - which ruby
+    - ruby -v
+
+Install RailsApps/rails3-devise-rspec-cucumber:
+  - google: what is rails3?
+  - google: In rails what is devise?
+  - google: what is rspec cucumber?
+  - git clone git://github.com/RailsApps/rails3-devise-rspec-cucumber.git svcc1
+  - cd svcc1
+  - ls
+
+Install Rails gem:
+  - gem list
+  - gem install rails
+  - gem list
+  - which rails
+  - rails -v
+
+Install some gems:
+  - google: what is a Gemfile?
+  - google: In Ruby what is bundler?
+  - Study the Gemfile:
+    - svcc1/Gemfile
+  - Add 1 line to Gemfile:
+    - gem "therubyracer"
+    - google: V8 Javascript Interpreter
+  - Add 1 line to Gemfile:
+    - gem "ruby-debug19"
+    - google: what is the ruby debugger?
+    - google: ruby-debug
+  - aptitude install sqlite3 libsqlite3-dev libxml2 libxml2-dev libxslt-dev
+  - gem install bundler --no-ri --no-rdoc
+  - google: .gemrc no rdoc
+  - create .gemrc
+  - google: In bundler what does binstubs do?
+  - bundle install --binstubs:
+    - This installs gems
+    - This bundles gems to svcc1
+    - This creates scripts in svcc1/bin/
+  - google: In Ruby bundler what does bundle package do?
+  - bundle package
+    - This copies gems to svcc1/vendor/
+    - google: In Ruby on Rails, why would I use bundle package?
+
+Lesson1 The spec directory:
+  - ls -la spec/
+
+Lesson1 The Ruby Debugger, some terminology, some basic syntax:
+  - google: .rdebugrc
+  - google: In rspec, what is an example?
+  - Edit spec/models/user_spec.rb:
+    - Add a 'debugger' statement to first 'example'
+  - run rspec:
+    bin/rspec --help
+    bin/rspec -de 'valid attribute' spec/models/user_spec.rb
+  - google: In Ruby what does the equal greater than operator do?
+  - google: In Ruby what does the at sign do?
+  - google: In Ruby what is an instance variable?
+  - google: In Ruby what do curly braces do?
+  - google: In Ruby what is a Hash?
+  - google: In Ruby how do I create a regular expression?
+  - google: In Ruby what does the colon do to a variable?
+  - google: In Ruby what is a symbol?
+  - google: In Ruby what is an exclamation mark?
+  - google: In Ruby why do I capitalize a variable?
+  - google: In Ruby how do I call a class method?
+  - google: In Ruby what is the difference between a class method and an instance method?
+
+
+Lesson2 The Ruby Debugger help menu, step:
+  - Inside the debugger type help
+  - Type step
+  - google: In Rails what is activerecord?
+  - ls -l /oracle/.rvm/gems/ruby-1.9.2-p290/gems/activerecord-3.1.1/lib/active_record
+  - google: In Ruby, what is a module?
+  - google: In Ruby, what is an exception?
+  - google: In Ruby, what does an ampersand do to a variable inside a method signature?
+  - google: In Ruby, what is a block?
+  - demo: arry = [1,2,3]; arry.each{|n| p(n + n)}
+  - google: In Ruby, what does yield do?
+  - google: In Ruby, what is an Array?
+  - google: In Ruby, what does array collect method do?
+
+
+
+
+

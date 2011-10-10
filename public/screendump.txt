@@ -1,0 +1,47 @@
+/pt/svcc/screendump.txt
+
+This file shows how to run rspec against a spec file which has a debugger command place at line 15.
+
+-d tells rspec to start ruby-debug if it finds a debugger command
+
+-e tells rspec to run only 1 "example" from the spec/models/user_spec.rb
+
+The 1 example I want to run is the 1 which contains the string 'valid attribute' in its description
+
+You can see the whole spec file here:
+  https://github.com/RailsApps/rails3-devise-rspec-cucumber/blob/f8928c3748eb624fb206b38675dbf5102ca055d4/spec/models/user_spec.rb
+
+
+
+oracle@h2:/pt/svcc/svcc1$ bin/rspec -de 'valid attribute' spec/models/user_spec.rb
+Run filtered including {:full_description=>/(?-mix:valid\ attribute)/}
+[11, 20] in /pt/svcc/svcc1/spec/models/user_spec.rb
+   11      }
+   12    end
+   13    
+   14    it "should create a new instance given a valid attribute" do
+   15  debugger
+=> 16      User.create!(@attr)
+   17    end
+   18    
+   19    it "should require an email address" do
+   20      no_email_user = User.new(@attr.merge(:email => ""))
+/pt/svcc/svcc1/spec/models/user_spec.rb:16
+User.create!(@attr)
+(rdb:1) step
+[31, 40] in /oracle/.rvm/gems/ruby-1.9.2-p290/gems/activerecord-3.1.1/lib/active_record/validations.rb
+   31  
+   32      module ClassMethods
+   33        # Creates an object just like Base.create but calls <tt>save!</tt> instead of +save+
+   34        # so an exception is raised if the record is invalid.
+   35        def create!(attributes = nil, options = {}, &block)
+=> 36          if attributes.is_a?(Array)
+   37            attributes.collect { |attr| create!(attr, options, &block) }
+   38          else
+   39            object = new(attributes, options)
+   40            yield(object) if block_given?
+/oracle/.rvm/gems/ruby-1.9.2-p290/gems/activerecord-3.1.1/lib/active_record/validations.rb:36
+if attributes.is_a?(Array)
+(rdb:1) attributes
+{:name=>"Example User", :email=>"user@example.com", :password=>"foobar", :password_confirmation=>"foobar"}
+(rdb:1) 
